@@ -16,13 +16,13 @@ const Footer = () => {
         <Grid container spacing={4} justifyContent="center">
           <Grid item xs={12} sm={6} md={4} className="text-center">
             <Typography variant="h6" className="font-semibold text-2xl">
-              Mia Cafe
+              Coffee Shop
             </Typography>
             <Typography variant="body2" className="mt-2">
               Dirección de la cafetería, Ciudad.
             </Typography>
             <Typography variant="body2" className="mt-2">
-              info@miacafe.com
+              info@coffeeshop.com
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={4} className="text-center">
@@ -66,7 +66,7 @@ const Footer = () => {
           </Grid>
           <Grid item xs={12} className="text-center mt-6">
             <Typography variant="body2">
-              &copy; {new Date().getFullYear()} Mia Cafe. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} Cafe. Todos los derechos reservados.
             </Typography>
           </Grid>
         </Grid>

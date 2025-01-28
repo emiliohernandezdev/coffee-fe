@@ -8,6 +8,13 @@ import Footer from './components/Footer';
 import { MaterialUISwitch } from './components/CustomComponents';
 import ProductsPage from './pages/ProductsPage';
 import { usePersistedTheme } from './hooks/ThemeHook'; // Importación correcta
+import LoginPage from './pages/LoginPage';
+import Appbar from './components/AppBar';
+import ForgotPasswordPage from './pages/ForgotPwd';
+import SignupPage from './pages/SignUp';
+import TableMap from './pages/TableMap';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
   const [darkMode, setDarkMode] = usePersistedTheme(); // Usando el hook personalizado
@@ -22,23 +29,19 @@ function App() {
       <div className={darkMode ? "dark" : ""}>
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-500">
           <Router>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h6" className="flex-grow">Mia Cafe</Typography>
-                <MaterialUISwitch
-                  checked={darkMode !== null ? darkMode : false} // Asegura que sea siempre un valor booleano
-                  onChange={handleThemeChange}
-                  color="primary"
-                  size="medium"
-                  inputProps={{ 'aria-label': 'theme switch' }}
-                  className="transition duration-300"
-                />
-              </Toolbar>
-            </AppBar>
+            <Appbar darkMode={darkMode} handleThemeChange={handleThemeChange}/>
 
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/recover" element={<ForgotPasswordPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/tables" element={
+                <DndProvider backend={HTML5Backend}>
+                <TableMap />
+              </DndProvider>
+              } />
             </Routes>
           </Router>
         </div>
