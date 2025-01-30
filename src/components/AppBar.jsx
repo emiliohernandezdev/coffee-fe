@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,27 +11,53 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Menu,
+  MenuItem,
+  Avatar,
 } from "@mui/material";
-import { MaterialUISwitch } from "./CustomComponents";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Importamos el contexto de autenticación
+import { signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { currentUser } = useAuth(); // Usamos el estado de autenticación
   const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // Opciones de navegación
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error al cerrar sesión:", error);
+      });
+  };
+
+  // Los elementos de navegación del Drawer
   const navItems = [
     { label: "Inicio", path: "/" },
     { label: "Productos", path: "/products" },
-    { label: "Login", path: "/login" },
+    // Si el usuario está autenticado, no es necesario mostrar la opción "Login" en el Drawer
+    ...(!currentUser ? [{ label: "Login", path: "/login" }] : []),
   ];
 
-  // Drawer (menú móvil)
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
       <List>
@@ -42,6 +68,14 @@ function Appbar({ darkMode, handleThemeChange }) {
             </ListItemButton>
           </ListItem>
         ))}
+        {/* Si el usuario está autenticado, agregar un link a "Mi cuenta" */}
+        {currentUser && (
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemText primary="Mi cuenta" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
@@ -50,7 +84,6 @@ function Appbar({ darkMode, handleThemeChange }) {
     <>
       <AppBar position="fixed" color="primary" className="shadow-lg">
         <Toolbar>
-          {/* Ícono de menú para móviles */}
           <IconButton
             edge="start"
             color="inherit"
@@ -61,7 +94,6 @@ function Appbar({ darkMode, handleThemeChange }) {
             <MenuIcon />
           </IconButton>
 
-          {/* Título */}
           <Typography
             variant="h6"
             sx={{ flexGrow: 1, cursor: "pointer" }}
@@ -70,27 +102,33 @@ function Appbar({ darkMode, handleThemeChange }) {
             Coffee Shop
           </Typography>
 
-          {/* Navegación para pantallas grandes */}
           <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 2 }}>
-            {navItems.map((item) => (
-              <Button key={item.label} color="inherit" component={Link} to={item.path}>
-                {item.label}
+            {currentUser ? (
+              <>
+                <IconButton onClick={handleMenuOpen}>
+                  <Avatar src={currentUser.photoURL} />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/login"
+              >
+                Login
               </Button>
-            ))}
+            )}
           </Box>
-
-          {/* Interruptor de tema */}
-          <MaterialUISwitch
-            checked={darkMode !== null ? darkMode : false}
-            onChange={handleThemeChange}
-            color="default"
-            size="medium"
-            inputProps={{ "aria-label": "theme switch" }}
-          />
         </Toolbar>
       </AppBar>
 
-      {/* Drawer para navegación en pantallas pequeñas */}
       <Drawer
         anchor="left"
         open={mobileOpen}

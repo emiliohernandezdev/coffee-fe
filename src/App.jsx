@@ -1,13 +1,11 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { lightTheme, darkTheme } from './theme'; // Importa tus temas personalizados
-import { CssBaseline, AppBar, Toolbar, Typography } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useState } from 'react';
 import HomePage from './pages/HomePage';
 import Footer from './components/Footer';
-import { MaterialUISwitch } from './components/CustomComponents';
 import ProductsPage from './pages/ProductsPage';
-import { usePersistedTheme } from './hooks/ThemeHook'; // Importación correcta
+import { usePersistedTheme } from './hooks/ThemeHook';
 import LoginPage from './pages/LoginPage';
 import Appbar from './components/AppBar';
 import ForgotPasswordPage from './pages/ForgotPwd';
@@ -17,6 +15,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
+
+
   const [darkMode, setDarkMode] = usePersistedTheme(); // Usando el hook personalizado
 
   const handleThemeChange = () => {
