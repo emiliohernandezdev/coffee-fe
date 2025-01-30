@@ -13,11 +13,13 @@ import SignupPage from './pages/SignUp';
 import TableMap from './pages/TableMap';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import AddProductPage from './pages/CreateProduct';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
 
 
-  const [darkMode, setDarkMode] = usePersistedTheme(); // Usando el hook personalizado
+  const [darkMode, setDarkMode] = usePersistedTheme();
 
   const handleThemeChange = () => {
     setDarkMode(!darkMode);
@@ -37,6 +39,8 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/recover" element={<ForgotPasswordPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/product/add" element={<AddProductPage />} />
               <Route path="/tables" element={
                 <DndProvider backend={HTML5Backend}>
                 <TableMap />

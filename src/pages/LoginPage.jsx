@@ -69,8 +69,8 @@ const LoginPage = () => {
                 elevation={8}
                 className="rounded-xl shadow-xl p-8 md:p-12 max-w-md w-full"
                 sx={{
-                    backgroundColor: theme.palette.mode === "dark" ? "#3c403d" : "#F1E5D1",
-                    color: theme.palette.text.primary,
+                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1", // Fondo más cálido en modo oscuro
+                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
                     borderRadius: "8px",
                     boxShadow:
                         theme.palette.mode === "dark"
@@ -110,8 +110,9 @@ const LoginPage = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5c5f56" : "#E2D8B3",
+                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3", // Fondo de entrada marrón oscuro en modo oscuro
                             borderRadius: "8px",
+                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
                         }}
                     />
 
@@ -124,8 +125,9 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5c5f56" : "#E2D8B3",
+                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3", // Fondo de entrada marrón oscuro en modo oscuro
                             borderRadius: "8px",
+                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
                         }}
                     />
 
@@ -146,29 +148,6 @@ const LoginPage = () => {
                         }}
                     >
                         Iniciar Sesión
-                    </Button>
-
-                    {/* Botón para acceder con Google */}
-                    <Button
-                        variant="outlined"
-                        fullWidth
-                        onClick={handleGoogleLogin}
-                        startIcon={<Google />} // Agregar el icono de Google
-                        sx={{
-                            marginTop: "12px",
-                            padding: "12px",
-                            borderRadius: "8px",
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            textTransform: "none",
-                            borderColor: theme.palette.primary.main,
-                            color: theme.palette.primary.main,
-                            ":hover": {
-                                backgroundColor: theme.palette.primary.light,
-                            },
-                        }}
-                    >
-                        Iniciar sesión con Google
                     </Button>
                 </form>
 

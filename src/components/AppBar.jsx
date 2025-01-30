@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,21 +11,30 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Menu,
-  MenuItem,
-  Avatar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Importamos el contexto de autenticación
-import { signOut } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { MaterialUISwitch } from "./CustomComponents";
+import { useTheme } from "@mui/material/styles";
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const { currentUser } = useAuth(); // Usamos el estado de autenticación
+  const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Aquí manejamos el tema de manera controlada
+  const theme = useTheme();
+  const [localDarkMode, setLocalDarkMode] = useState(darkMode || false); // Aseguramos que darkMode tenga un valor definido
+
+  useEffect(() => {
+    setLocalDarkMode(darkMode); // Sincronizamos el estado cuando el valor de darkMode cambie desde el componente padre
+  }, [darkMode]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -39,24 +48,26 @@ function Appbar({ darkMode, handleThemeChange }) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-      });
-  };
-
-  // Los elementos de navegación del Drawer
   const navItems = [
     { label: "Inicio", path: "/" },
-    { label: "Productos", path: "/products" },
-    // Si el usuario está autenticado, no es necesario mostrar la opción "Login" en el Drawer
-    ...(!currentUser ? [{ label: "Login", path: "/login" }] : []),
+    { label: "Menú", path: "/menu" },
+    { label: "Acerca de", path: "/about" },
+    { label: "Nuestro Proyecto", path: "/project" },
+    { label: "Contactanos", path: "/contact" }
   ];
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleSwitchChange = () => {
+    setLocalDarkMode((prevMode) => !prevMode); // Actualizamos el valor de darkMode
+    handleThemeChange(); // Llamamos al cambio de tema
+  };
 
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
@@ -68,14 +79,12 @@ function Appbar({ darkMode, handleThemeChange }) {
             </ListItemButton>
           </ListItem>
         ))}
-        {/* Si el usuario está autenticado, agregar un link a "Mi cuenta" */}
-        {currentUser && (
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemText primary="Mi cuenta" />
-            </ListItemButton>
-          </ListItem>
-        )}
+        <ListItem disablePadding>
+          <ListItemButton>
+            {/* <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} /> */}
+            <ListItemText primary="Modo Oscuro" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -88,7 +97,7 @@ function Appbar({ darkMode, handleThemeChange }) {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ display: { sm: "none" }, mr: 2 }} // Solo visible en pantallas pequeñas
+            sx={{ display: { sm: "none" }, mr: 2 }}
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
@@ -96,35 +105,32 @@ function Appbar({ darkMode, handleThemeChange }) {
 
           <Typography
             variant="h6"
-            sx={{ flexGrow: 1, cursor: "pointer" }}
+            sx={{
+              flexGrow: 1,
+              cursor: "pointer",
+              fontFamily: "'Lobster', cursive",
+              letterSpacing: 1,
+            }}
             onClick={() => navigate("/")}
           >
             Coffee Shop
           </Typography>
 
           <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 2 }}>
-            {currentUser ? (
-              <>
-                <IconButton onClick={handleMenuOpen}>
-                  <Avatar src={currentUser.photoURL} />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
-                </Menu>
-              </>
-            ) : (
+            {navItems.map((item) => (
               <Button
+                key={item.label}
                 color="inherit"
                 component={Link}
-                to="/login"
+                to={item.path}
               >
-                Login
+                {item.label}
               </Button>
-            )}
+            ))}
+
+            <IconButton color="inherit" onClick={handleDialogOpen}>
+              <SettingsIcon />
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
@@ -134,11 +140,24 @@ function Appbar({ darkMode, handleThemeChange }) {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
-          keepMounted: true, // Mejora el rendimiento en pantallas móviles
+          keepMounted: true,
         }}
       >
         {drawer}
       </Drawer>
+
+      {/* Diálogo para cambiar el tema */}
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Configuración</DialogTitle>
+        <DialogContent>
+          {/* <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} /> */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

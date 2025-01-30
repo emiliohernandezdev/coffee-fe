@@ -4,40 +4,77 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#6f4f1e', // Un café cálido, evoca la madera.
+      main: '#6A4E23',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#9C7E3B',
     },
     background: {
-      default: '#e3d1b3', // Un beige cálido que recuerda a la madera clara.
-      paper: '#fff', // Blanco para las tarjetas y elementos que necesitan destacarse.
+      default: '#F8F3E3',
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#3e2723', // Un tono oscuro de café para el texto principal.
-      secondary: '#6f4f1e', // Un café medio que se complementa con el color principal.
+      primary: '#3E2C1C',
+      secondary: '#6A4E23',
     },
-    sections: {
-      background: '#d8c6a5', // Un tono suave de madera más clara para las secciones.
-      text: '#3e2723', // Texto oscuro para buena legibilidad.
+    action: {
+      hover: '#B98E4C',
     },
-  },
-  components: {
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#8B5E3C', // Color madera cálido para las tarjetas.
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#6A4E23',
+            color: '#FFF',
+          },
         },
       },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          '& fieldset': {
-            borderColor: '#6f4f1e', // Borde café cálido.
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '10px',
+            textTransform: 'none',
+            backgroundColor: '#6A4E23',
+            color: '#FFF',
+            '&:hover': {
+              backgroundColor: '#B98E4C',
+            },
           },
-          '&:hover fieldset': {
-            borderColor: '#3e2723', // Más oscuro cuando el input es enfocado.
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#F9F4E6',
+            '& fieldset': {
+              borderColor: '#9C7E3B',
+            },
+            '&:hover fieldset': {
+              borderColor: '#B98E4C',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#B98E4C',
+            },
           },
-          '&.Mui-focused fieldset': {
-            borderColor: '#3e2723', // Borde más oscuro al enfocarse.
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#FFFFFF',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            borderRadius: '12px',
+          },
+        },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: '#F8F3E3',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
           },
         },
       },
@@ -49,40 +86,77 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#3e2723', // Un café oscuro para el tema principal.
+      main: '#4E2C19',
+    },
+    secondary: {
+      main: '#9C7E3B',
     },
     background: {
-      default: '#2c1a1a', // Un tono oscuro que recuerda a la madera de café.
-      paper: '#3e2723', // Fondo oscuro para las tarjetas, coherente con el tema.
+      default: '#2C1B0D',
+      paper: '#3E2C1C',
     },
     text: {
-      primary: '#e0e0e0', // Texto claro para asegurar legibilidad sobre el fondo oscuro.
-      secondary: '#a1887f', // Un tono suave y cálido, relacionado con la madera.
+      primary: '#F4E1C1',
+      secondary: '#9C7E3B',
     },
-    sections: {
-      background: '#3e2723', // Fondo cálido y oscuro para las secciones.
-      text: '#e0e0e0', // Texto claro para contraste.
+    action: {
+      hover: '#E9A47B',
     },
-  },
-  components: {
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#5B3D28', // Madera oscura para las tarjetas.
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#4E2C19',
+            color: '#FFF',
+          },
         },
       },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          '& fieldset': {
-            borderColor: '#e0e0e0', // Borde claro para los inputs.
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '10px',
+            textTransform: 'none',
+            backgroundColor: '#4E2C19',
+            color: '#FFF',
+            '&:hover': {
+              backgroundColor: '#E9A47B',
+            },
           },
-          '&:hover fieldset': {
-            borderColor: '#D4A373', // Un toque cálido de dorado suave al pasar el mouse.
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#3B2C1D',
+            '& fieldset': {
+              borderColor: '#4E2C19',
+            },
+            '&:hover fieldset': {
+              borderColor: '#E9A47B',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#E9A47B',
+            },
           },
-          '&.Mui-focused fieldset': {
-            borderColor: '#D4A373', // Borde dorado al enfocarse.
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#3E2C1C',
+            color: '#F4E1C1',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+            borderRadius: '12px',
+          },
+        },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: '#3B2C1D',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
           },
         },
       },
