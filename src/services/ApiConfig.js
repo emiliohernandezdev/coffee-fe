@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiConfig = {
-    baseURL: 'http://localhost:3000/api/v1/', // Cambia a tu URL de backend
+    baseURL: 'http://localhost:4000/api/v1/', // Cambia a tu URL de backend
 };
 
 // Crear instancia de axios

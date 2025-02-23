@@ -1,13 +1,10 @@
 import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Button, Box } from '@mui/material';
-import { motion } from 'framer-motion'; // Animaciones
+import { motion } from 'framer-motion'; 
 import { Card, CardContent } from '@mui/material';
-
+import NowPlaying from "../components/NowPlaying"; 
 const HomePage = () => {
-  // Obtén el tema actual
   const theme = useTheme();
-
-  // Colores de fondo claros y oscuros
   const lightBackground = theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.default;
   const darkBackground = theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.background.paper;
 
@@ -58,6 +55,8 @@ const HomePage = () => {
           </Button>
         </motion.div>
       </section>
+
+      {/* <NowPlaying /> */}
 
       {/* Productos Destacados */}
       <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>

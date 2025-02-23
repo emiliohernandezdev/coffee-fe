@@ -69,8 +69,8 @@ const LoginPage = () => {
                 elevation={8}
                 className="rounded-xl shadow-xl p-8 md:p-12 max-w-md w-full"
                 sx={{
-                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1", // Fondo más cálido en modo oscuro
-                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
+                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1",
+                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
                     borderRadius: "8px",
                     boxShadow:
                         theme.palette.mode === "dark"

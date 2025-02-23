@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Grid, Paper, Typography, Button, Box, Fab, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
-import { useDrag, useDrop } from 'react-dnd';
+import { Paper, Typography, Button, Box, Fab, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { useDrag } from 'react-dnd';
 import AddIcon from '@mui/icons-material/Add';
 
 const TablePage = () => {
@@ -9,60 +9,69 @@ const TablePage = () => {
         { id: 2, x: 3, y: 3, number: 2, capacity: 2, occupied: false, comensal: null },
         { id: 3, x: 4, y: 4, number: 3, capacity: 6, occupied: false, comensal: null },
     ]);
-    
+
     const [openDialog, setOpenDialog] = useState(false);
     const [newCapacity, setNewCapacity] = useState(4);
-    const [comensales, setComensales] = useState(['Juan', 'Pedro', 'Ana']); // Ejemplo de comensales
+    const [comensales, setComensales] = useState(['Juan', 'Pedro', 'Ana']);
     const [selectedComensal, setSelectedComensal] = useState('');
-    const [openComboBox, setOpenComboBox] = useState(null); // Esto ahora almacena el índice o id de la mesa
 
-    const handleAddTableClick = () => {
-        setOpenDialog(true);
+    const appBarHeight = 64;
+
+    const getNextFreePosition = () => {
+        let occupiedPositions = tables.map(table => `${table.x}-${table.y}`);
+        for (let x = 0; x <= 4; x++) {
+            for (let y = 0; y <= 4; y++) {
+                if (!occupiedPositions.includes(`${x}-${y}`)) {
+                    return { x, y };
+                }
+            }
+        }
+        return { x: 0, y: 0 };
     };
 
-    const handleDialogClose = () => {
-        setOpenDialog(false);
+    const checkCollision = (x, y) => {
+        return tables.some(table => table.x === x && table.y === y);
     };
+
+    const moveTable = (id, newX, newY) => {
+        const maxX = Math.floor(window.innerWidth / 120) - 1;
+        const maxY = Math.floor((window.innerHeight - appBarHeight) / 120) - 1;
+
+        const clampedX = Math.min(Math.max(0, newX), maxX);
+        const clampedY = Math.min(Math.max(0, newY), maxY);
+
+        if (!checkCollision(clampedX, clampedY)) {
+            setTables(prevTables => prevTables.map(table =>
+                table.id === id ? { ...table, x: clampedX, y: clampedY } : table
+            ));
+        }
+    };
+
+    const handleAddTableClick = () => setOpenDialog(true);
+    const handleDialogClose = () => setOpenDialog(false);
 
     const handleDialogConfirm = () => {
+        const { x, y } = getNextFreePosition();
         setTables([
             ...tables,
             {
                 id: tables.length + 1,
-                x: 0,
-                y: 0,
+                x,
+                y,
                 number: tables.length + 1,
                 capacity: newCapacity,
                 occupied: false,
                 comensal: null,
-            },
+            }
         ]);
         setOpenDialog(false);
     };
 
-    const handleTableClick = (tableId) => {
-        // Al hacer clic en la mesa, configuramos el ComboBox para esa mesa
-        setOpenComboBox(tableId);
-    };
-
     const handleComensalSelect = (tableId) => {
-        // Aquí actualizamos la mesa con el comensal seleccionado
-        setTables((prevTables) =>
-            prevTables.map((table) =>
-                table.id === tableId
-                    ? { ...table, occupied: true, comensal: selectedComensal }
-                    : table
-            )
-        );
-        setOpenComboBox(null); // Cerrar el comboBox después de seleccionar
-    };
-
-    const moveTable = (id, newX, newY) => {
-        setTables((prevTables) =>
-            prevTables.map((table) =>
-                table.id === id ? { ...table, x: newX, y: newY } : table
-            )
-        );
+        setTables(prevTables => prevTables.map(table =>
+            table.id === tableId ? { ...table, occupied: true, comensal: selectedComensal } : table
+        ));
+        setOpenComboBox(null);
     };
 
     const Table = ({ table }) => {
@@ -72,8 +81,8 @@ const TablePage = () => {
             end: (item, monitor) => {
                 const delta = monitor.getDifferenceFromInitialOffset();
                 if (item && delta) {
-                    const newX = Math.max(0, item.x + delta.x / 80); 
-                    const newY = Math.max(0, item.y + delta.y / 80); 
+                    const newX = Math.max(0, item.x + delta.x / 120);
+                    const newY = Math.max(0, item.y + delta.y / 120);
                     moveTable(item.id, newX, newY);
                 }
             },
@@ -86,32 +95,25 @@ const TablePage = () => {
             <Paper
                 ref={drag}
                 style={{
-                    backgroundColor: table.occupied ? '#FF6347' : '#32CD32',
+                    backgroundColor: table.occupied ? '#e63946' : '#2a9d8f',
                     width: '100px',
                     height: '100px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    cursor: 'move',
+                    cursor: 'grab',
                     opacity: isDragging ? 0.5 : 1,
                     borderRadius: '8px',
                     position: 'absolute',
-                    top: `${table.y * 80}px`,
-                    left: `${table.x * 80}px`,
+                    top: `${table.y * 120}px`,
+                    left: `${table.x * 120}px`,
                     transition: 'all 0.3s ease-in-out',
-                    backgroundImage: 'url(/path_to_table_icon.png)', // Usa un ícono o imagen para la mesa
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    boxShadow: '2px 2px 10px rgba(0,0,0,0.2)',
                 }}
-                onClick={() => handleTableClick(table.id)}
             >
                 <Box style={{ textAlign: 'center', color: 'white' }}>
-                    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-                        {table.number}
-                    </Typography>
-                    <Typography variant="body2">
-                        Cap: {table.capacity}
-                    </Typography>
+                    <Typography variant="h6"># {table.number}</Typography>
+                    <Typography variant="body2">Capacidad: {table.capacity}</Typography>
                     <Typography variant="body2">
                         {table.occupied ? `Ocupada por: ${table.comensal}` : 'Disponible'}
                     </Typography>
@@ -120,96 +122,28 @@ const TablePage = () => {
         );
     };
 
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: 'TABLE',
-        drop: (item, monitor) => {
-            const delta = monitor.getDifferenceFromInitialOffset();
-            if (item && delta) {
-                const newX = Math.max(0, item.x + delta.x / 80);
-                const newY = Math.max(0, item.y + delta.y / 80);
-                moveTable(item.id, newX, newY);
-            }
-        },
-        collect: (monitor) => ({
-            isOver: monitor.isOver(),
-        }),
-    }));
-
     return (
-        <div className="relative w-full h-screen bg-primary pt-16">
-            <Typography variant="h4" component="h1" align="center" className="text-white mb-4">
+        <div style={{ width: '100%', height: '100vh', position: 'relative', overflow: 'hidden' }}>
+            <Typography variant="h4" align="center" gutterBottom>
                 Mesas
             </Typography>
 
-            <Fab
-                variant="extended"
-                color="primary"
-                aria-label="Agregar mesa"
-                sx={{
-                    position: 'fixed',
-                    bottom: '80px',
-                    right: '30px',
-                    zIndex: 1000,
-                    color: 'white',
-                }}
-                onClick={handleAddTableClick}
-            >
-                <AddIcon sx={{ mr: 1 }} />
-                Agregar mesa
+            <Fab variant="extended" color="primary" sx={{ position: 'fixed', bottom: '80px', right: '30px' }} onClick={handleAddTableClick}>
+                <AddIcon sx={{ mr: 1 }} /> Agregar mesa
             </Fab>
 
             <Dialog open={openDialog} onClose={handleDialogClose}>
                 <DialogTitle>Agregar Mesa</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="capacity"
-                        label="Capacidad"
-                        type="number"
-                        fullWidth
-                        value={newCapacity}
-                        onChange={(e) => setNewCapacity(e.target.value)}
-                    />
+                    <TextField autoFocus margin="dense" label="Capacidad" type="number" fullWidth value={newCapacity} onChange={(e) => setNewCapacity(e.target.value)} />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleDialogConfirm} color="primary">
-                        Agregar
-                    </Button>
+                    <Button onClick={handleDialogClose} color="primary">Cancelar</Button>
+                    <Button onClick={handleDialogConfirm} color="primary">Agregar</Button>
                 </DialogActions>
             </Dialog>
 
-            {/* Combobox para seleccionar comensal */}
-            {openComboBox !== null && (
-                <div style={{ position: 'absolute', top: `${tables.find(table => table.id === openComboBox)?.y * 80}px`, left: `${tables.find(table => table.id === openComboBox)?.x * 80}px`, zIndex: 100 }}>
-                    <FormControl fullWidth>
-                        <InputLabel>Comensal</InputLabel>
-                        <Select
-                            value={selectedComensal}
-                            onChange={(e) => setSelectedComensal(e.target.value)}
-                            label="Comensal"
-                        >
-                            {comensales.map((comensal, index) => (
-                                <MenuItem key={index} value={comensal}>
-                                    {comensal}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <Button onClick={() => handleComensalSelect(openComboBox)} color="primary" variant="contained">
-                        Asignar
-                    </Button>
-                </div>
-            )}
-
-            <div className="relative w-full h-full" ref={drop}>
-                {tables.map((table) => (
-                    <Table key={table.id} table={table} />
-                ))}
-            </div>
+            {tables.map(table => <Table key={table.id} table={table} />)}
         </div>
     );
 };

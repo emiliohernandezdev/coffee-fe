@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material/styles';
-import { lightTheme, darkTheme } from './theme'; // Importa tus temas personalizados
+import { lightTheme, darkTheme } from './theme';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
@@ -12,9 +12,9 @@ import ForgotPasswordPage from './pages/ForgotPwd';
 import SignupPage from './pages/SignUp';
 import TableMap from './pages/TableMap';
 import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import AddProductPage from './pages/CreateProduct';
 import CheckoutPage from './pages/CheckoutPage';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 function App() {
 
@@ -42,7 +42,7 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/product/add" element={<AddProductPage />} />
               <Route path="/tables" element={
-                <DndProvider backend={HTML5Backend}>
+                <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
                 <TableMap />
               </DndProvider>
               } />

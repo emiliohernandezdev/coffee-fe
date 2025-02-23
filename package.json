@@ -10,24 +10,31 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
     "axios": "^1.7.9",
+    "buffer": "^6.0.3",
+    "dnd-kit": "^0.0.2",
     "firebase": "^11.2.0",
     "framer-motion": "^12.0.6",
     "react": "^18.3.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^18.3.1",
     "react-grid-layout": "^1.5.0",
     "react-resizable": "^3.0.5",
     "react-responsive-carousel": "^3.2.23",
     "react-rnd": "^10.4.14",
     "react-router-dom": "^7.1.3",
+    "react-spotify-web-playback": "^0.14.7",
     "react-toastify": "^11.0.3",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "swapy": "^1.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
