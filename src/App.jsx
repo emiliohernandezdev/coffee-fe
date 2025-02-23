@@ -15,6 +15,7 @@ import { DndProvider } from 'react-dnd';
 import AddProductPage from './pages/CreateProduct';
 import CheckoutPage from './pages/CheckoutPage';
 import { TouchBackend } from 'react-dnd-touch-backend';
+import Callback from './pages/Callback';
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/product/add" element={<AddProductPage />} />
+              <Route path="/callback" element={<Callback />} />
               <Route path="/tables" element={
                 <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
                 <TableMap />

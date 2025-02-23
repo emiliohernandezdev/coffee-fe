@@ -2,7 +2,6 @@ import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Button, Box } from '@mui/material';
 import { motion } from 'framer-motion'; 
 import { Card, CardContent } from '@mui/material';
-import NowPlaying from "../components/NowPlaying"; 
 const HomePage = () => {
   const theme = useTheme();
   const lightBackground = theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.default;
@@ -56,7 +55,6 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* <NowPlaying /> */}
 
       {/* Productos Destacados */}
       <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>

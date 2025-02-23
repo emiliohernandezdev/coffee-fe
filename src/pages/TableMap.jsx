@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, Typography, Button, Box, Fab, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useDrag } from 'react-dnd';
 import AddIcon from '@mui/icons-material/Add';
+import TablesService from '../services/TablesService';
+import io from 'socket.io-client';
 
 const TablePage = () => {
-    const [tables, setTables] = useState([
-        { id: 1, x: 2, y: 2, number: 1, capacity: 4, occupied: false, comensal: null },
-        { id: 2, x: 3, y: 3, number: 2, capacity: 2, occupied: false, comensal: null },
-        { id: 3, x: 4, y: 4, number: 3, capacity: 6, occupied: false, comensal: null },
-    ]);
+    const [tables, setTables] = useState([]);
 
+    const socket = io("http://localhost:4000/tables");
+
+    useEffect(() => {
+        const fetchTables = async () => {
+            try{
+                const data = await TablesService.getAllTables();
+                console.log(data)
+                setTables(data);
+            }catch(err){
+                console.log(err);
+            }
+        };
+
+        fetchTables();
+
+        socket.on('tableAdded', (table) => {
+            setTables(prevTables => [...prevTables, table]);
+        });
+
+        socket.on('tableUpdated', (updatedTable) => {
+            setTables(prevTables => prevTables.map(table =>
+                table._id === updatedTable._id ? updatedTable : table
+            ));
+        });
+
+        return () => {
+            socket.off('tableAdded');
+            socket.off('tableUpdated');
+        };
+    }, [])
     const [openDialog, setOpenDialog] = useState(false);
     const [newCapacity, setNewCapacity] = useState(4);
-    const [comensales, setComensales] = useState(['Juan', 'Pedro', 'Ana']);
-    const [selectedComensal, setSelectedComensal] = useState('');
-
     const appBarHeight = 64;
 
     const getNextFreePosition = () => {
@@ -33,7 +58,7 @@ const TablePage = () => {
         return tables.some(table => table.x === x && table.y === y);
     };
 
-    const moveTable = (id, newX, newY) => {
+    const moveTable = async (id, newX, newY) => {
         const maxX = Math.floor(window.innerWidth / 120) - 1;
         const maxY = Math.floor((window.innerHeight - appBarHeight) / 120) - 1;
 
@@ -41,9 +66,11 @@ const TablePage = () => {
         const clampedY = Math.min(Math.max(0, newY), maxY);
 
         if (!checkCollision(clampedX, clampedY)) {
-            setTables(prevTables => prevTables.map(table =>
-                table.id === id ? { ...table, x: clampedX, y: clampedY } : table
-            ));
+            try{
+                await TablesService.updateTable(id, {x: clampedX, y: clampedY});
+            }catch(err){
+                console.error("Error updating table:", error);
+            }
         }
     };
 
@@ -52,26 +79,19 @@ const TablePage = () => {
 
     const handleDialogConfirm = () => {
         const { x, y } = getNextFreePosition();
-        setTables([
-            ...tables,
-            {
-                id: tables.length + 1,
-                x,
-                y,
-                number: tables.length + 1,
-                capacity: newCapacity,
-                occupied: false,
-                comensal: null,
-            }
-        ]);
+        // setTables([
+        //     ...tables,
+        //     {
+        //         _id: tables.length + 1,
+        //         x,
+        //         y,
+        //         number: tables.length + 1,
+        //         capacity: newCapacity,
+        //         occupied: false,
+        //         comensal: null,
+        //     }
+        // ]);
         setOpenDialog(false);
-    };
-
-    const handleComensalSelect = (tableId) => {
-        setTables(prevTables => prevTables.map(table =>
-            table.id === tableId ? { ...table, occupied: true, comensal: selectedComensal } : table
-        ));
-        setOpenComboBox(null);
     };
 
     const Table = ({ table }) => {
@@ -143,7 +163,7 @@ const TablePage = () => {
                 </DialogActions>
             </Dialog>
 
-            {tables.map(table => <Table key={table.id} table={table} />)}
+            {tables.map(table => <Table key={table._id} table={table} />)}
         </div>
     );
 };
