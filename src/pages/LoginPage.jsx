@@ -3,6 +3,9 @@ import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Sna
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
+import Lottie from "lottie-react";
+import PasswordIconLottie from "../JSON/password.json";
+import UserIconLottie from "../JSON/user.json";
 
 const LoginPage = () => {
     const theme = useTheme();

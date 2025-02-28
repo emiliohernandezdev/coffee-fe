@@ -4,21 +4,83 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
+      main: '#8d7966', 
+      contrastText: '#121012', 
       main: '#8B7355', // Brown
       contrastText: '#FFFFFF',
     },
     secondary: {
       main: '#6B8E23', // Olive green
+      main: '#d8c8b8', 
     },
     background: {
       default: '#F5F5DC', // Beige
       paper: '#FFFFFF',
+      default: '#e2ddd9', 
+      paper: '#FFFFFF', 
     },
     text: {
-      primary: '#4A4A4A', // Dark gray
-      secondary: '#8B7355', // Brown
+      primary: '#3E2C1C',
+      secondary: '#6A4E23',
     },
     action: {
+      hover: '#b5a18e', 
+    },
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#8d7966', 
+          color: '#121012', 
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+          textTransform: 'none',
+          backgroundColor: '#8d7966', 
+          color: '#121012', 
+          '&:hover': {
+            backgroundColor: '#b5a18e', 
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f5f0ed', 
+          '& fieldset': {
+            borderColor: '#d8c8b8', 
+          },
+          '&:hover fieldset': {
+            borderColor: '#b5a18e', 
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#b5a18e', 
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          borderRadius: '12px',
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#e2ddd9', 
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
       hover: '#A2B964', // Light olive green
     },
     components: {
@@ -80,7 +142,7 @@ export const lightTheme = createTheme({
       },
     },
   },
-});
+},});
 
 export const darkTheme = createTheme({
   palette: {

@@ -18,9 +18,12 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
+import settigsIconLottie from "../JSON/setting.json";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
+import Lottie from 'lottie-react';
+
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -65,6 +68,8 @@ function Appbar({ darkMode, handleThemeChange }) {
     setLocalDarkMode((prevMode) => !prevMode);
     handleThemeChange();
   };
+
+  const [isHovered, setIsHovered] = useState(false); // Estado para el hover
 
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
@@ -123,9 +128,13 @@ function Appbar({ darkMode, handleThemeChange }) {
                 {item.label}
               </Button>
             ))}
-
-            <IconButton color="inherit" onClick={handleDialogOpen}>
-              <SettingsIcon />
+            <IconButton
+              color="inherit"
+              onClick={handleDialogOpen}
+              onMouseEnter={() => setIsHovered(true)}//Button hover y dialogo "SettingsIconLottie"
+              onMouseLeave={() => setIsHovered(false)} // Manejar el hover
+            >
+              <Lottie animationData={settigsIconLottie} loop={isHovered} /> {/* Usar el estado de hover */}
             </IconButton>
           </Box>
         </Toolbar>
