@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api/v1/products';
+const API_URL = 'http://192.168.0.11:4000/api/v1/products';
 
 const TablesService = {
     getAvailableProducts: async () => {

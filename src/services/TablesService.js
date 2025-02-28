@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api/v1/tables';
+const API_URL = 'http://192.168.0.11:4000/api/v1/tables';
 
 const TablesService = {
     getAllTables: async () => {
@@ -10,14 +10,14 @@ const TablesService = {
     
     addTable: async (table) => {
         const response = await axios.post(API_URL + "/add", table);
-        return response.data;
+        return response.data["result"];
     },
 
     updateTable: async (id, updates) => {
 
         var body = {...updates, id: id};
         const response = await axios.put(`${API_URL}/update`, body);
-        return response.data;
+        return response.data["result"];
     },
 
     deleteTable: async (id) => {

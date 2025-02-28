@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../firebase";
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee } from "@mui/icons-material";

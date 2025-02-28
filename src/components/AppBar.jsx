@@ -77,10 +77,9 @@ function Appbar({ darkMode, handleThemeChange }) {
           </ListItem>
         ))}
         <ListItem disablePadding>
-          <ListItemButton>
-            {/* <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} /> */}
-            <ListItemText primary="Modo Oscuro" />
-          </ListItemButton>
+          <IconButton color="inherit" onClick={handleDialogOpen}>
+            <SettingsIcon />
+          </IconButton>
         </ListItem>
       </List>
     </Box>

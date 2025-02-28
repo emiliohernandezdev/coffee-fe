@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
@@ -34,23 +32,6 @@ const LoginPage = () => {
             setOpenSnackbar(true);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleGoogleLogin = async () => {
-        try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            console.log("Usuario autenticado con Google:", result.user);
-
-            setSnackbarMessage("¡Inicio de sesión con Google exitoso!");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
-        } catch (error) {
-            console.error("Error con Google Sign-In:", error);
-            setSnackbarMessage("Error al iniciar sesión con Google");
-            setSnackbarSeverity("error");
-            setOpenSnackbar(true);
         }
     };
 

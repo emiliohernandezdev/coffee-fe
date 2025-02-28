@@ -36,7 +36,7 @@ const ProductsPage = () => {
         }
         setProductImages(images); 
       } catch (err) {
-        console.error('Error al cargar productos:', err);
+        
       } finally {
         setLoading(false);
       }

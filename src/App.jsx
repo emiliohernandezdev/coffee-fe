@@ -11,12 +11,10 @@ import Appbar from './components/AppBar';
 import ForgotPasswordPage from './pages/ForgotPwd';
 import SignupPage from './pages/SignUp';
 import TableMap from './pages/TableMap';
-import { DndProvider } from 'react-dnd';
 import AddProductPage from './pages/CreateProduct';
 import CheckoutPage from './pages/CheckoutPage';
-import { TouchBackend } from 'react-dnd-touch-backend';
 import Callback from './pages/Callback';
-
+import { ToastContainer } from 'react-toastify';
 function App() {
 
 
@@ -29,6 +27,7 @@ function App() {
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
+      <ToastContainer />
       <div className={darkMode ? "dark" : ""}>
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-500">
           <Router>
@@ -43,11 +42,10 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/product/add" element={<AddProductPage />} />
               <Route path="/callback" element={<Callback />} />
-              <Route path="/tables" element={
-                <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+              <Route path="/tables" element=
                 <TableMap />
-              </DndProvider>
-              } />
+
+             />
             </Routes>
           </Router>
         </div>
