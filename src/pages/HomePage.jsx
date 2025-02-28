@@ -2,6 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Button, Box } from '@mui/material';
 import { motion } from 'framer-motion'; // Animaciones
 import { Card, CardContent } from '@mui/material';
+import React from 'react';
 
 const HomePage = () => {
   // Obtén el tema actual

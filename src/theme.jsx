@@ -4,78 +4,78 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#6A4E23',
-      contrastText: '#fff',
+      main: '#8d7966', 
+      contrastText: '#121012', 
     },
     secondary: {
-      main: '#9C7E3B',
+      main: '#d8c8b8', 
     },
     background: {
-      default: '#F8F3E3',
-      paper: '#FFFFFF',
+      default: '#e2ddd9', 
+      paper: '#FFFFFF', 
     },
     text: {
-      primary: '#3E2C1C',
-      secondary: '#6A4E23',
+      primary: '#121012', 
+      secondary: '#2e1f1c', 
     },
     action: {
-      hover: '#B98E4C',
+      hover: '#b5a18e', 
     },
-    components: {
-      MuiAppBar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#6A4E23',
-            color: '#FFF',
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#8d7966', 
+          color: '#121012', 
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+          textTransform: 'none',
+          backgroundColor: '#8d7966', 
+          color: '#121012', 
+          '&:hover': {
+            backgroundColor: '#b5a18e', 
           },
         },
       },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: '10px',
-            textTransform: 'none',
-            backgroundColor: '#6A4E23',
-            color: '#FFF',
-            '&:hover': {
-              backgroundColor: '#B98E4C',
-            },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f5f0ed', 
+          '& fieldset': {
+            borderColor: '#d8c8b8', 
+          },
+          '&:hover fieldset': {
+            borderColor: '#b5a18e', 
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#b5a18e', 
           },
         },
       },
-      MuiOutlinedInput: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#F9F4E6',
-            '& fieldset': {
-              borderColor: '#9C7E3B',
-            },
-            '&:hover fieldset': {
-              borderColor: '#B98E4C',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#B98E4C',
-            },
-          },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          borderRadius: '12px',
         },
       },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#FFFFFF',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            borderRadius: '12px',
-          },
-        },
-      },
-      MuiDialog: {
-        styleOverrides: {
-          paper: {
-            backgroundColor: '#F8F3E3',
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#e2ddd9', 
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
         },
       },
     },
