@@ -30,8 +30,8 @@ const useTables = () => {
 
     const addTable = async (table) => {
         try {
-            const newX = tables.length * 150; // Espaciado de 150px entre mesas
-            const newY = 50;  // Altura fija para que no todas queden en el mismo punto
+            const newX = tables.length * 150;
+            const newY = 50;
 
 
             const newTable = { ...table, x: newX, y: newY };

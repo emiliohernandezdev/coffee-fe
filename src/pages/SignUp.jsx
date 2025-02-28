@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
@@ -172,28 +170,6 @@ const SignUpPage = () => {
                         Crear Cuenta
                     </Button>
 
-                    {/* Botón para acceder con Google */}
-                    <Button
-                        variant="outlined"
-                        fullWidth
-                        onClick={handleGoogleLogin}
-                        startIcon={<Google />}
-                        sx={{
-                            marginTop: "12px",
-                            padding: "12px",
-                            borderRadius: "8px",
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            textTransform: "none",
-                            borderColor: theme.palette.primary.main,
-                            color: theme.palette.primary.main,
-                            ":hover": {
-                                backgroundColor: theme.palette.primary.light,
-                            },
-                        }}
-                    >
-                        Regístrate con Google
-                    </Button>
                 </form>
 
                 <Box mt={3} display="flex" justifyContent="space-between" textAlign="center">

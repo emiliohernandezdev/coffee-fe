@@ -6,7 +6,6 @@ import { useTheme } from '@mui/material/styles';
 const Footer = () => {
   const theme = useTheme();
 
-  // Determinamos el color de fondo según el tema actual
   const footerBackgroundColor = theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.grey[200];
   const footerTextColor = theme.palette.mode === 'dark' ? theme.palette.text.primary : theme.palette.text.secondary;
 

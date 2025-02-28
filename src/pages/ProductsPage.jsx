@@ -7,17 +7,16 @@ import ProductsService from '../services/ProductsService';
 
 const ProductsPage = () => {
   const theme = useTheme();
-  const fabBackgroundColor = theme.palette.primary.main; // Color principal del tema para el botón
+  const fabBackgroundColor = theme.palette.primary.main;
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [page, setPage] = useState(1); // Página actual
-  const productsPerPage = 6; // Productos por página
+  const [page, setPage] = useState(1); 
+  const productsPerPage = 6;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Estado para manejar la URL de las imágenes
   const [productImages, setProductImages] = useState({});
 
   useEffect(() => {
@@ -26,8 +25,6 @@ const ProductsPage = () => {
         setLoading(true);
         const data = await ProductsService.getAvailableProducts();
         setProducts(data.products);
-
-        // Obtener las imágenes de los productos
         const images = {};
         for (let product of data.products) {
           try {
@@ -37,9 +34,9 @@ const ProductsPage = () => {
             console.error(`Error al obtener la imagen para el producto ${product._id}:`, err);
           }
         }
-        setProductImages(images); // Actualizamos el estado con las URLs de las imágenes
+        setProductImages(images); 
       } catch (err) {
-        console.error('Error al cargar productos:', err);
+        
       } finally {
         setLoading(false);
       }
@@ -70,13 +67,11 @@ const ProductsPage = () => {
     setPage(value);
   };
 
-  // Filtramos los productos según la búsqueda y la categoría
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (selectedCategory ? product.category === selectedCategory : true)
   );
 
-  // Calculamos el rango de productos a mostrar en la página actual
   const startIndex = (page - 1) * productsPerPage;
   const selectedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
 

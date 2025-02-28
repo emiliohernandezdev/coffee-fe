@@ -31,12 +31,11 @@ function Appbar({ darkMode, handleThemeChange }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Aquí manejamos el tema de manera controlada
   const theme = useTheme();
-  const [localDarkMode, setLocalDarkMode] = useState(darkMode || false); // Aseguramos que darkMode tenga un valor definido
+  const [localDarkMode, setLocalDarkMode] = useState(darkMode || false);
 
   useEffect(() => {
-    setLocalDarkMode(darkMode); // Sincronizamos el estado cuando el valor de darkMode cambie desde el componente padre
+    setLocalDarkMode(darkMode);
   }, [darkMode]);
 
   const handleDrawerToggle = () => {
@@ -54,8 +53,6 @@ function Appbar({ darkMode, handleThemeChange }) {
   const navItems = [
     { label: "Inicio", path: "/" },
     { label: "Menú", path: "/menu" },
-    { label: "Acerca de", path: "/about" },
-    { label: "Nuestro Proyecto", path: "/project" },
     { label: "Contactanos", path: "/contact" }
   ];
 
@@ -68,8 +65,8 @@ function Appbar({ darkMode, handleThemeChange }) {
   };
 
   const handleSwitchChange = () => {
-    setLocalDarkMode((prevMode) => !prevMode); // Actualizamos el valor de darkMode
-    handleThemeChange(); // Llamamos al cambio de tema
+    setLocalDarkMode((prevMode) => !prevMode);
+    handleThemeChange();
   };
 
   const [isHovered, setIsHovered] = useState(false); // Estado para el hover
@@ -85,10 +82,9 @@ function Appbar({ darkMode, handleThemeChange }) {
           </ListItem>
         ))}
         <ListItem disablePadding>
-          <ListItemButton>
-            {/* <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} /> */}
-            <ListItemText primary="Modo Oscuro" />
-          </ListItemButton>
+          <IconButton color="inherit" onClick={handleDialogOpen}>
+            <SettingsIcon />
+          </IconButton>
         </ListItem>
       </List>
     </Box>
@@ -159,7 +155,7 @@ function Appbar({ darkMode, handleThemeChange }) {
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>Configuración</DialogTitle>
         <DialogContent>
-          {/* <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} /> */}
+          <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">

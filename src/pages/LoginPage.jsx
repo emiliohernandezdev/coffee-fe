@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
@@ -40,23 +38,6 @@ const LoginPage = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            console.log("Usuario autenticado con Google:", result.user);
-
-            setSnackbarMessage("¡Inicio de sesión con Google exitoso!");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
-        } catch (error) {
-            console.error("Error con Google Sign-In:", error);
-            setSnackbarMessage("Error al iniciar sesión con Google");
-            setSnackbarSeverity("error");
-            setOpenSnackbar(true);
-        }
-    };
-
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
@@ -72,8 +53,8 @@ const LoginPage = () => {
                 elevation={8}
                 className="rounded-xl shadow-xl p-8 md:p-12 max-w-md w-full"
                 sx={{
-                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1", // Fondo más cálido en modo oscuro
-                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
+                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1",
+                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
                     borderRadius: "8px",
                     boxShadow:
                         theme.palette.mode === "dark"

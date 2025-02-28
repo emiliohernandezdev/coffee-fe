@@ -6,17 +6,22 @@ export const lightTheme = createTheme({
     primary: {
       main: '#8d7966', 
       contrastText: '#121012', 
+      main: '#8B7355', // Brown
+      contrastText: '#FFFFFF',
     },
     secondary: {
+      main: '#6B8E23', // Olive green
       main: '#d8c8b8', 
     },
     background: {
+      default: '#F5F5DC', // Beige
+      paper: '#FFFFFF',
       default: '#e2ddd9', 
       paper: '#FFFFFF', 
     },
     text: {
-      primary: '#121012', 
-      secondary: '#2e1f1c', 
+      primary: '#3E2C1C',
+      secondary: '#6A4E23',
     },
     action: {
       hover: '#b5a18e', 
@@ -76,38 +81,14 @@ export const lightTheme = createTheme({
           padding: '20px',
           borderRadius: '12px',
           boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-        },
-      },
-    },
-  },
-});
-
-export const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#4E2C19',
-    },
-    secondary: {
-      main: '#9C7E3B',
-    },
-    background: {
-      default: '#2C1B0D',
-      paper: '#3E2C1C',
-    },
-    text: {
-      primary: '#F4E1C1',
-      secondary: '#9C7E3B',
-    },
-    action: {
-      hover: '#E9A47B',
+      hover: '#A2B964', // Light olive green
     },
     components: {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: '#4E2C19',
-            color: '#FFF',
+            backgroundColor: '#8B7355', // Brown
+            color: '#FFFFFF',
           },
         },
       },
@@ -116,10 +97,10 @@ export const darkTheme = createTheme({
           root: {
             borderRadius: '10px',
             textTransform: 'none',
-            backgroundColor: '#4E2C19',
-            color: '#FFF',
+            backgroundColor: '#8B7355', // Brown
+            color: '#FFFFFF',
             '&:hover': {
-              backgroundColor: '#E9A47B',
+              backgroundColor: '#A2B964', // Light olive green
             },
           },
         },
@@ -127,15 +108,15 @@ export const darkTheme = createTheme({
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            backgroundColor: '#3B2C1D',
+            backgroundColor: '#FFFFFF',
             '& fieldset': {
-              borderColor: '#4E2C19',
+              borderColor: '#6B8E23', // Olive green
             },
             '&:hover fieldset': {
-              borderColor: '#E9A47B',
+              borderColor: '#A2B964', // Light olive green
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#E9A47B',
+              borderColor: '#A2B964', // Light olive green
             },
           },
         },
@@ -143,8 +124,102 @@ export const darkTheme = createTheme({
       MuiCard: {
         styleOverrides: {
           root: {
-            backgroundColor: '#3E2C1C',
-            color: '#F4E1C1',
+            backgroundColor: '#FFFFFF',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            borderRadius: '12px',
+          },
+        },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: '#F5F5DC', // Beige
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          },
+        },
+      },
+    },
+  },
+},});
+
+export const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#A2B964', // Light olive green
+    },
+    secondary: {
+      main: '#8B7355', // Brown
+    },
+    background: {
+      default: '#1E1E1E', // Darker gray
+      paper: '#2E2E2E', // Dark gray
+    },
+    text: {
+      primary: '#F5F5DC', // Beige
+      secondary: '#A2B964', // Light olive green
+    },
+    action: {
+      hover: '#6B8E23', // Olive green
+    },
+    error: {
+      main: '#FF6F61', // Coral for errors
+    },
+    warning: {
+      main: '#FFD166', // Pastel yellow for warnings
+    },
+    info: {
+      main: '#6B5B95', // Ube for info
+    },
+    success: {
+      main: '#4CAF50', // Green for success
+    },
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#F5F5DC', // Beige
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '10px',
+            textTransform: 'none',
+            backgroundColor: '#A2B964', // Light olive green
+            color: '#1E1E1E', // Darker gray
+            '&:hover': {
+              backgroundColor: '#6B8E23', // Olive green
+            },
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#F5F5DC', // Beige
+            '& fieldset': {
+              borderColor: '#A2B964', // Light olive green
+            },
+            '&:hover fieldset': {
+              borderColor: '#6B8E23', // Olive green
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#6B8E23', // Olive green
+            },
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#F5F5DC', // Beige
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
             borderRadius: '12px',
           },
@@ -153,10 +228,39 @@ export const darkTheme = createTheme({
       MuiDialog: {
         styleOverrides: {
           paper: {
-            backgroundColor: '#3B2C1D',
+            backgroundColor: '#2E2E2E', // Dark gray
             padding: '20px',
             borderRadius: '12px',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+          },
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#F5F5DC', // Beige
+            border: '1px solid #A2B964', // Light olive green
+          },
+          standardError: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#FF6F61', // Coral
+            borderColor: '#FF6F61', // Coral
+          },
+          standardWarning: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#FFD166', // Pastel yellow
+            borderColor: '#FFD166', // Pastel yellow
+          },
+          standardInfo: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#6B5B95', // Ube
+            borderColor: '#6B5B95', // Ube
+          },
+          standardSuccess: {
+            backgroundColor: '#2E2E2E', // Dark gray
+            color: '#4CAF50', // Green
+            borderColor: '#4CAF50', // Green
           },
         },
       },
