@@ -4,84 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="./public/manifest.json" rel="manifest">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <title>Coffee App</title>
-    <style>
-      #installButton {
-        display: none; /* Oculto por defecto */
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <button id="installButton">Install App</button>
-
-  <script>
-    // Registrar el Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          })
-          .catch(err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-      });
-    }
-
-    // Manejar el evento beforeinstallprompt
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Previene que el mini-infobar aparezca en mobile
-      e.preventDefault();
-      // Guarda el evento para que pueda ser activado más tarde
-      deferredPrompt = e;
-      // Muestra el botón de instalación solo si el banner de Chrome no aparece
-      showInstallButton();
-    });
-
-    // Función para mostrar el botón de instalación
-    function showInstallButton() {
-      const installButton = document.getElementById('installButton');
-      installButton.style.display = 'block';
-
-      installButton.addEventListener('click', () => {
-        // Oculta el botón de instalación
-        installButton.style.display = 'none';
-        // Muestra el prompt de instalación
-        deferredPrompt.prompt();
-        // Espera a que el usuario responda al prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-          } else {
-            console.log('User dismissed the install prompt');
-          }
-          deferredPrompt = null;
-        });
-      });
-    }
-
-    // Verificar si la PWA ya está instalada
-    window.addEventListener('appinstalled', () => {
-      console.log('PWA was installed');
-      // Oculta el botón de instalación si la PWA ya está instalada
-      const installButton = document.getElementById('installButton');
-      installButton.style.display = 'none';
-    });
-  </script>
   </body>
 </html>

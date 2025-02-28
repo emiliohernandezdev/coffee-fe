@@ -15,67 +15,7 @@ import AddProductPage from './pages/CreateProduct';
 import CheckoutPage from './pages/CheckoutPage';
 import Callback from './pages/Callback';
 import { ToastContainer } from 'react-toastify';
-import { useEffect } from 'react';
-
-function urlBase64ToUint8Array(base64string){
-  const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
-  const base64 = (base64string + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-}
-
-async function requestNotificationPermission(){
-  const permission = await Notification.requestPermission();
-  if(permission == 'granted'){
-    console.log('permiso concedido');
-    return true;
-  }else{
-    console.log('permiso no concedido');
-    return false;
-  }
-}
-
-async function subscribeToPush(){
-  const publicKey = 'BCUtZ_aXd1MYYCbC7Ve_Zsnh21m7edXI90n_jmt1nujlI9CwiRBEH-XnIoNEyOL9SQSOjfiozMnUxxVulYSVXo0';
-  const registration = await navigator.serviceWorker.ready;
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(publicKey),
-  });
-  return subscription;
-}
-
 function App() {
-
-  useEffect(() =>  {
-    if('serviceWorker' in navigator && 'PushManager' in window){
-      navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log("Service Worker registrado", registration);
-
-        requestNotificationPermission().then((permissionGranted) => {
-          if(permissionGranted){
-            subscribeToPush()
-            .then((subscription) => {
-              console.log('Subscripcion generada', subscription);
-
-              localStorage.setItem('pushSubscription', JSON.stringify(subscription));
-
-              console.log('saved to localStorage');
-            })
-            .catch((err) => {
-              console.log('Error al suscribir al usuario ', err);
-            })
-          }
-        })
-      })
-      .catch((err) => {
-        console.error("Error registrando el service worker");
-      })
-    }else{
-      console.warn('El navegador no soporta notificaciones');
-    }
-  }, []);
 
 
   const [darkMode, setDarkMode] = usePersistedTheme();
