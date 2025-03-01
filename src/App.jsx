@@ -13,9 +13,9 @@ import SignupPage from './pages/SignUp';
 import TableMap from './pages/TableMap';
 import AddProductPage from './pages/CreateProduct';
 import CheckoutPage from './pages/CheckoutPage';
-import Callback from './pages/Callback';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
+import AddCategoryPage from './pages/categories/CreateCategory';
 
 function urlBase64ToUint8Array(base64string){
   const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
@@ -101,7 +101,7 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/product/add" element={<AddProductPage />} />
-              <Route path="/callback" element={<Callback />} />
+              <Route path="/category/add" element={<AddCategoryPage />} />
               <Route path="/tables" element=
                 <TableMap />
 

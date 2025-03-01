@@ -87,7 +87,7 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   return (
     <>
-      <AppBar position="fixed" color="primary" className="shadow-lg">
+      <AppBar position="sticky" color="primary" className="shadow-lg">
         <Toolbar>
           <IconButton
             edge="start"
