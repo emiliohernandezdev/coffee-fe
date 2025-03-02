@@ -15,8 +15,14 @@ import {
   CheckCircle,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import Lottie from "lottie-react";
 
-// Estilos personalizados para los íconos del Stepper
+// Importa tus animaciones Lottie
+import cookingAnimation from "../../animations/lottie/cooking.json";
+import receivedAnimation from "../../animations/lottie/received.json";
+import onTheWayAnimation from "../../animations/lottie/delivery.json";
+import deliveredAnimation from "../../animations/lottie/ready.json";
+
 const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
@@ -64,6 +70,14 @@ const steps = [
   { label: "Entregado", icon: 4 },
 ];
 
+// Mapea cada paso a su respectiva animación Lottie
+const stepAnimations = {
+  0: receivedAnimation,
+  1: cookingAnimation,
+  2: onTheWayAnimation,
+  3: deliveredAnimation,
+};
+
 const TrackOrderPage = () => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(1);
@@ -91,7 +105,7 @@ const TrackOrderPage = () => {
         ))}
       </Stepper>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg mb-8">
         <CardContent>
           <Typography variant="h6" className="font-bold mb-4">
             Detalles del Pedido
@@ -114,6 +128,21 @@ const TrackOrderPage = () => {
               {steps[activeStep].label}
             </Typography>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Card para mostrar la animación Lottie */}
+      <Card className="shadow-lg">
+        <CardContent>
+          <Typography variant="h6" className="font-bold mb-4">
+            Estado del Pedido
+          </Typography>
+          <Lottie
+            animationData={stepAnimations[activeStep]}
+            loop={true}
+            autoplay={true}
+            style={{ height: 200 }}
+          />
         </CardContent>
       </Card>
     </div>
