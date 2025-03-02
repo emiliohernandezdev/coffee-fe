@@ -26,6 +26,10 @@ import MenuPage from './pages/products/MenuPage';
 import CartPage from './pages/products/CartPage';
 import TrackOrderPage from './pages/orders/TrackOrder';
 import CheckoutPage from './pages/orders/CheckoutPage';
+import ProfilePage from './pages/users/ProfilePage';
+import OrderHistoryPage from './pages/orders/OrderHistory';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import WaiterView from './pages/waiter/WaiterOrders';
 
 function urlBase64ToUint8Array(base64string) {
   const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
@@ -92,6 +96,10 @@ const AppContent = () => {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/tracking" element={<TrackOrderPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/order-history" element={<OrderHistoryPage />} />
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/waiter" element={<WaiterView />} />
             </Routes>
           </Router>
         </div>

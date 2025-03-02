@@ -16,22 +16,35 @@ import {
   DialogContent,
   DialogTitle,
   Badge,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
+import HomeIcon from "@mui/icons-material/Home";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import HistoryIcon from "@mui/icons-material/History";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
 import { AuthContext } from "../context/AuthContext";
-import { CartContext } from "../context/CartContext"; // Importa el CartContext
+import { CartContext } from "../context/CartContext";
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useContext(AuthContext);
-  const { cart } = useContext(CartContext); // Usa el CartContext
+  const { cart } = useContext(CartContext);
 
   const theme = useTheme();
   const [localDarkMode, setLocalDarkMode] = useState(darkMode || false);
@@ -57,6 +70,14 @@ function Appbar({ darkMode, handleThemeChange }) {
     handleThemeChange();
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -64,16 +85,17 @@ function Appbar({ darkMode, handleThemeChange }) {
   const handleLogoutClick = () => {
     logout();
     navigate("/");
+    handleMenuClose();
   };
 
   const handleCartClick = () => {
-    navigate("/cart"); // Redirige a la página del carrito
+    navigate("/cart");
   };
 
   const navItems = [
-    { label: "Inicio", path: "/" },
-    { label: "Menú", path: "/menu" },
-    { label: "Contactanos", path: "/contact" },
+    { label: "Inicio", path: "/", icon: <HomeIcon /> },
+    { label: "Menú", path: "/menu", icon: <RestaurantMenuIcon /> },
+    { label: "Contactanos", path: "/contact", icon: <ContactMailIcon /> },
   ];
 
   const drawer = (
@@ -82,17 +104,28 @@ function Appbar({ darkMode, handleThemeChange }) {
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton component={Link} to={item.path}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           </ListItem>
         ))}
         <ListItem disablePadding>
           {isAuthenticated ? (
-            <Button color="inherit" onClick={handleLogoutClick} fullWidth>
+            <Button
+              color="inherit"
+              onClick={handleLogoutClick}
+              fullWidth
+              startIcon={<LogoutIcon />}
+            >
               Cerrar sesión
             </Button>
           ) : (
-            <Button color="inherit" onClick={handleLoginClick} fullWidth>
+            <Button
+              color="inherit"
+              onClick={handleLoginClick}
+              fullWidth
+              startIcon={<LoginIcon />}
+            >
               Iniciar sesión
             </Button>
           )}
@@ -140,24 +173,84 @@ function Appbar({ darkMode, handleThemeChange }) {
                 color="inherit"
                 component={Link}
                 to={item.path}
+                startIcon={item.icon}
               >
                 {item.label}
               </Button>
             ))}
 
-            {/* Ícono del carrito con badge */}
             <IconButton color="inherit" onClick={handleCartClick}>
               <Badge badgeContent={cart.length} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
 
+            {/* Botón de "Iniciar sesión" o menú de "Mi cuenta" */}
             {isAuthenticated ? (
-              <Button color="inherit" onClick={handleLogoutClick}>
-                Cerrar sesión
-              </Button>
+              <>
+                <Button
+                  color="inherit"
+                  onClick={handleMenuOpen}
+                  startIcon={<AccountCircleIcon />}
+                >
+                  Mi cuenta
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem
+                    key="profile"
+                    onClick={() => {
+                      navigate("/profile");
+                      handleMenuClose();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText>Mi perfil</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    key="history"
+                    onClick={() => {
+                      navigate("/order-history");
+                      handleMenuClose();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <HistoryIcon />
+                    </ListItemIcon>
+                    <ListItemText>Historial de pedidos</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    key="settings"
+                    onClick={() => {
+                      navigate("/settings");
+                      handleMenuClose();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText>Configuración</ListItemText>
+                  </MenuItem>
+                  <Divider key="divider" />
+                  <MenuItem key="logout" onClick={handleLogoutClick}>
+                    <ListItemIcon>
+                      <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText>Cerrar sesión</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </>
             ) : (
-              <Button color="inherit" onClick={handleLoginClick}>
+              <Button
+                color="inherit"
+                onClick={handleLoginClick}
+                startIcon={<LoginIcon />}
+              >
                 Iniciar sesión
               </Button>
             )}
@@ -180,11 +273,13 @@ function Appbar({ darkMode, handleThemeChange }) {
         {drawer}
       </Drawer>
 
-      {/* Diálogo para cambiar el tema */}
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>Configuración</DialogTitle>
         <DialogContent>
-          <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="body1">Modo oscuro</Typography>
+            <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
