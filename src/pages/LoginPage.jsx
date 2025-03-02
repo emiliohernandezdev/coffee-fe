@@ -1,37 +1,47 @@
-import { useState } from "react";
-import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
-import Loader from "../components/Loader";
+import { useContext, useState } from "react";
+import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton} from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
+import { AuthService } from '../services/AuthService';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
     const theme = useTheme();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+    const [showPassword, setShowPassword] = useState(false);
+    const { login } = useContext(AuthContext);
 
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+
+    const handleTogglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        setLoading(true);
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("Usuario autenticado:", userCredential.user);
-
-            setSnackbarMessage("¡Inicio de sesión exitoso!");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
+            const response = await AuthService.login(email, password);
+            if (response.success == true) {
+                setSnackbarMessage("¡Inicio de sesión exitoso!");
+                setSnackbarSeverity("success");
+                setOpenSnackbar(true);
+                login(response.token);
+            } else {
+                setSnackbarMessage(response.message);
+                setSnackbarSeverity("error");
+                setOpenSnackbar(true);
+            }
         } catch (error) {
-            console.error("Error al iniciar sesión:", error);
             setSnackbarMessage("Error al iniciar sesión");
             setSnackbarSeverity("error");
             setOpenSnackbar(true);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -99,7 +109,7 @@ const LoginPage = () => {
 
                     <TextField
                         label="Contraseña"
-                        type="password"
+                        type={showPassword ? "text" : "password"} // Cambia el tipo de input según el estado
                         variant="outlined"
                         fullWidth
                         required
@@ -109,6 +119,19 @@ const LoginPage = () => {
                             backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3", // Fondo de entrada marrón oscuro en modo oscuro
                             borderRadius: "8px",
                             color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
+                        }}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleTogglePassword}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />} {/* Cambia el ícono según el estado */}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
                         }}
                     />
 
@@ -142,9 +165,7 @@ const LoginPage = () => {
                 </Box>
             </Paper>
 
-            {loading && <Loader />}
-
-            <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+            <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
                 <MuiAlert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
                     {snackbarMessage}
                 </MuiAlert>

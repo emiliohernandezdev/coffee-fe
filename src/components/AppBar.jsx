@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,18 +15,23 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
+import { AuthContext } from "../context/AuthContext";
+import { CartContext } from "../context/CartContext"; // Importa el CartContext
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { cart } = useContext(CartContext); // Usa el CartContext
 
   const theme = useTheme();
   const [localDarkMode, setLocalDarkMode] = useState(darkMode || false);
@@ -38,20 +43,6 @@ function Appbar({ darkMode, handleThemeChange }) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const navItems = [
-    { label: "Inicio", path: "/" },
-    { label: "Menú", path: "/menu" },
-    { label: "Contactanos", path: "/contact" }
-  ];
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -66,6 +57,25 @@ function Appbar({ darkMode, handleThemeChange }) {
     handleThemeChange();
   };
 
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleLogoutClick = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleCartClick = () => {
+    navigate("/cart"); // Redirige a la página del carrito
+  };
+
+  const navItems = [
+    { label: "Inicio", path: "/" },
+    { label: "Menú", path: "/menu" },
+    { label: "Contactanos", path: "/contact" },
+  ];
+
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
       <List>
@@ -76,6 +86,17 @@ function Appbar({ darkMode, handleThemeChange }) {
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          {isAuthenticated ? (
+            <Button color="inherit" onClick={handleLogoutClick} fullWidth>
+              Cerrar sesión
+            </Button>
+          ) : (
+            <Button color="inherit" onClick={handleLoginClick} fullWidth>
+              Iniciar sesión
+            </Button>
+          )}
+        </ListItem>
         <ListItem disablePadding>
           <IconButton color="inherit" onClick={handleDialogOpen}>
             <SettingsIcon />
@@ -123,6 +144,23 @@ function Appbar({ darkMode, handleThemeChange }) {
                 {item.label}
               </Button>
             ))}
+
+            {/* Ícono del carrito con badge */}
+            <IconButton color="inherit" onClick={handleCartClick}>
+              <Badge badgeContent={cart.length} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
+            {isAuthenticated ? (
+              <Button color="inherit" onClick={handleLogoutClick}>
+                Cerrar sesión
+              </Button>
+            ) : (
+              <Button color="inherit" onClick={handleLoginClick}>
+                Iniciar sesión
+              </Button>
+            )}
 
             <IconButton color="inherit" onClick={handleDialogOpen}>
               <SettingsIcon />

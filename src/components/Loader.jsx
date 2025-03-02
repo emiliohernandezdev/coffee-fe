@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { LoaderContext } from '../context/LoaderContext';
 
 const messages = [
   'Preparando el café...',
@@ -16,6 +17,7 @@ const messages = [
 
 const Loader = () => {
   const [message, setMessage] = useState('');
+  const { loading } = useContext(LoaderContext);
 
   // Función para obtener un mensaje aleatorio
   const getRandomMessage = () => {
@@ -27,8 +29,10 @@ const Loader = () => {
   useEffect(() => {
     getRandomMessage();
     const interval = setInterval(getRandomMessage, 3000);
-    return () => clearInterval(interval); // Limpiar el intervalo cuando el componente se desmonta
+    return () => clearInterval(interval);
   }, []);
+
+  if(!loading) return null;
 
   return (
     <Box

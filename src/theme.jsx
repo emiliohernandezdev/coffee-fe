@@ -127,25 +127,25 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#A1887F', // Café claro para modo oscuro
+      main: '#D4A55E', // Café dorado (como el color de un espresso cremoso)
       contrastText: '#FFFFFF', // Texto blanco
     },
     secondary: {
-      main: '#8D6E63', // Café medio
+      main: '#8B5E3C', // Café tostado (como granos de café)
     },
     background: {
-      default: '#212121', // Gris oscuro para fondo
-      paper: '#424242', // Gris más claro para tarjetas
+      default: '#1E1E1E', // Fondo oscuro (casi negro, para resaltar los colores)
+      paper: '#2E2E2E', // Gris oscuro para tarjetas y contenedores
     },
     text: {
       primary: '#FFFFFF', // Texto blanco
-      secondary: '#BCAAA4', // Café claro para texto secundario
+      secondary: '#D4A55E', // Café dorado para texto secundario
     },
     action: {
-      hover: '#6D4C41', // Café oscuro para hovers
+      hover: '#A77C4D', // Café cálido para hovers
     },
     error: {
-      main: '#FF6F61', // Coral para errores
+      main: '#FF6B6B', // Rojo coral para errores
     },
     warning: {
       main: '#FFD166', // Amarillo pastel para advertencias
@@ -162,32 +162,32 @@ export const darkTheme = createTheme({
     h1: {
       fontSize: '2.5rem',
       fontWeight: 500,
-      color: '#FFFFFF', // Texto blanco
+      color: '#D4A55E', // Café dorado para títulos
     },
     h2: {
       fontSize: '2rem',
       fontWeight: 500,
-      color: '#FFFFFF',
+      color: '#D4A55E',
     },
     h3: {
       fontSize: '1.75rem',
       fontWeight: 500,
-      color: '#FFFFFF',
+      color: '#D4A55E',
     },
     h4: {
       fontSize: '1.5rem',
       fontWeight: 500,
-      color: '#FFFFFF',
+      color: '#D4A55E',
     },
     h5: {
       fontSize: '1.25rem',
       fontWeight: 500,
-      color: '#FFFFFF',
+      color: '#D4A55E',
     },
     h6: {
       fontSize: '1.2rem',
       fontWeight: 500,
-      color: '#FFFFFF',
+      color: '#D4A55E',
     },
     body1: {
       fontSize: '1rem',
@@ -197,7 +197,7 @@ export const darkTheme = createTheme({
     body2: {
       fontSize: '0.875rem',
       lineHeight: 1.5,
-      color: '#BCAAA4', // Café claro para texto secundario
+      color: '#D4A55E', // Café dorado para texto secundario
     },
     button: {
       textTransform: 'none',
@@ -231,15 +231,15 @@ export const darkTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#424242', // Gris oscuro
-          color: '#FFFFFF', // Texto blanco
+          backgroundColor: '#2E2E2E', // Gris oscuro para la barra de navegación
+          color: '#D4A55E', // Café dorado para el texto
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: '#424242', // Gris oscuro para tarjetas
+          backgroundColor: '#2E2E2E', // Gris oscuro para tarjetas
           color: '#FFFFFF', // Texto blanco
           boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
           borderRadius: '12px',
@@ -250,7 +250,7 @@ export const darkTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#424242', // Gris oscuro para diálogos
+          backgroundColor: '#2E2E2E', // Gris oscuro para diálogos
           padding: '20px',
           borderRadius: '12px',
           boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',

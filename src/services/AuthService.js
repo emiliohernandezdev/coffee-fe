@@ -1,18 +1,16 @@
-import api from "./ApiConfig";
+import api from './ApiConfig';
 
-const AuthService = {
+export const AuthService = {
+    getCategories: async () => {
+        const response = await api.get(`/category/all`);
+        return response.data;
+    },
+
     login: async (email, password) => {
-        try{
-            const response = await api.post(`/auth/login`, {
-                email,
-                password
-            });
-
-            return response.data;
-        }catch(error){
-            throw error;
-        }
-    }
-}
-
-export default AuthService;
+        const response = await api.post(`/auth/login`, {
+            email,
+            password
+        });
+        return response.data;
+    },
+};
