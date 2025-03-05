@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.13:4000/api/v1/tables';
+const API_URL = 'http://192.168.0.12:4000/api/v1/tables';
 
 const TablesService = {
     getAllTables: async () => {
