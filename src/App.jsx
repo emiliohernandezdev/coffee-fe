@@ -30,6 +30,7 @@ import ProfilePage from './pages/users/ProfilePage';
 import OrderHistoryPage from './pages/orders/OrderHistory';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WaiterView from './pages/waiter/WaiterOrders';
+import Callback from './pages/users/SpotifyCallback';
 
 function urlBase64ToUint8Array(base64string) {
   const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
@@ -100,6 +101,7 @@ const AppContent = () => {
               <Route path="/order-history" element={<OrderHistoryPage />} />
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/waiter" element={<WaiterView />} />
+              <Route path="/callback" element={<Callback />} />
             </Routes>
           </Router>
         </div>

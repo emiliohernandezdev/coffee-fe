@@ -37,11 +37,13 @@ import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
+import MusicIcon from "@mui/icons-material/MusicNote";
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [spotifyConnected, setSpotifyConnected] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
@@ -90,6 +92,15 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   const handleCartClick = () => {
     navigate("/cart");
+  };
+
+  const handleSpotifyConnect = () => {
+    const clientId = "71ee94f03f164016b9a3770d5375e3ef";
+    const redirectUri = encodeURIComponent("http://localhost:5173/callback"); // Reemplaza con tu redirect URI
+    const scopes = "streaming user-read-playback-state user-modify-playback-state";
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scopes}`;
+  
+    window.location.href = authUrl;
   };
 
   const navItems = [
@@ -185,7 +196,6 @@ function Appbar({ darkMode, handleThemeChange }) {
               </Badge>
             </IconButton>
 
-            {/* Botón de "Iniciar sesión" o menú de "Mi cuenta" */}
             {isAuthenticated ? (
               <>
                 <Button
@@ -280,6 +290,12 @@ function Appbar({ darkMode, handleThemeChange }) {
             <Typography variant="body1">Modo oscuro</Typography>
             <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} />
           </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
+            <Typography variant="body1">Conectar con Spotify</Typography>
+            <IconButton color="inherit" onClick={handleSpotifyConnect}>
+              <MusicIcon />
+            </IconButton>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
@@ -287,6 +303,25 @@ function Appbar({ darkMode, handleThemeChange }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Reproductor flotante */}
+      {spotifyConnected && (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: 2,
+            boxShadow: 3,
+            p: 2,
+          }}
+        >
+          <Typography variant="h6">Reproductor de Spotify</Typography>
+          {/* Aquí iría el reproductor de Spotify */}
+        </Box>
+      )}
     </>
   );
 }

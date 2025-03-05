@@ -11,7 +11,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 const TablePage = () => {
     const [tables, setTables] = useState([]);
     const [clients, setClients] = useState([]);
-    const socket = io("http://192.168.0.9:4000/tables");
+    const socket = io("http://192.168.1.13:4000/tables");
 
     useEffect(() => {
         const fetchTables = async () => {

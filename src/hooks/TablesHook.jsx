@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import TablesService from '../services/TablesService';
 
-const socket = io('http://localhost:3000');
+const socket = io('http://192.168.1.13:3000');
 
 const useTables = () => {
     const [tables, setTables] = useState([]);
