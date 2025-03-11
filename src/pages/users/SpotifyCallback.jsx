@@ -50,9 +50,9 @@ const getCurrentPlayback = async () => {
   };
 
 const exchangeCodeForToken = async (code, navigate) => {
-    const clientId = "71ee94f03f164016b9a3770d5375e3ef";
-    const clientSecret = "bf7a44966a9f48029c6c7ad3ed1dd25b";
-    const redirectUri = "http://localhost:5173/callback";
+    const clientId = "";
+    const clientSecret = "";
+    const redirectUri = "http://192.168.0.12:5173/callback";
   
     try {
       const response = await axios.post(

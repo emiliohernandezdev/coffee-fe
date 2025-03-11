@@ -96,7 +96,7 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   const handleSpotifyConnect = () => {
     const clientId = "71ee94f03f164016b9a3770d5375e3ef";
-    const redirectUri = encodeURIComponent("http://localhost:5173/callback"); // Reemplaza con tu redirect URI
+    const redirectUri = encodeURIComponent("http://192.168.0.12:5173/callback"); // Reemplaza con tu redirect URI
     const scopes = "streaming user-read-playback-state user-modify-playback-state";
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scopes}`;
   
