@@ -7,11 +7,13 @@ import io from 'socket.io-client';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
+import { apiConfig } from '../services/ApiConfig';
 
 const TablePage = () => {
     const [tables, setTables] = useState([]);
     const [clients, setClients] = useState([]);
-    const socket = io("http://192.168.1.13:4000/tables");
+
+    const socket = io(`${apiConfig.socketUrl}/tables`);
 
     useEffect(() => {
         const fetchTables = async () => {

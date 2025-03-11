@@ -15,9 +15,10 @@ import {
   Box,
   Chip,
 } from "@mui/material";
-import { ChevronLeft, ChevronRight, Search, Add, FilterList, LocalOffer } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, Search, Add } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import ProductsService from "../../services/ProductsService";
+import { apiConfig } from "../../services/ApiConfig";
 
 const MenuPage = () => {
   const theme = useTheme();
@@ -119,7 +120,7 @@ const MenuPage = () => {
           <CardMedia
             component="img"
             className="h-48 object-cover rounded-t-lg"
-            image={product.images[currentImageIndex]}
+            
             alt={product.name}
           />
           {/* Botones del carrusel */}
@@ -229,8 +230,8 @@ const MenuPage = () => {
                   }}
                 >
                   <MenuItem value="">Todas</MenuItem>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
+                  {categories.map((cat, index) => (
+                    <MenuItem key={index} value={cat}>
                       {cat}
                     </MenuItem>
                   ))}
@@ -269,7 +270,7 @@ const MenuPage = () => {
           <Grid container spacing={4} className="mt-4">
             {currentProducts.map((product) => (
               <Grid item key={product._id} xs={12} sm={6} md={4}>
-                <ProductCard product={product} />
+                <ProductCard key={product._id} product={product} />
               </Grid>
             ))}
           </Grid>

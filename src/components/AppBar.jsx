@@ -290,12 +290,12 @@ function Appbar({ darkMode, handleThemeChange }) {
             <Typography variant="body1">Modo oscuro</Typography>
             <MaterialUISwitch checked={localDarkMode} onChange={handleSwitchChange} />
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
+          {/* <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
             <Typography variant="body1">Conectar con Spotify</Typography>
             <IconButton color="inherit" onClick={handleSpotifyConnect}>
               <MusicIcon />
             </IconButton>
-          </Box>
+          </Box> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
@@ -303,25 +303,6 @@ function Appbar({ darkMode, handleThemeChange }) {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Reproductor flotante */}
-      {spotifyConnected && (
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 16,
-            right: 16,
-            zIndex: 1000,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            boxShadow: 3,
-            p: 2,
-          }}
-        >
-          <Typography variant="h6">Reproductor de Spotify</Typography>
-          {/* Aquí iría el reproductor de Spotify */}
-        </Box>
-      )}
     </>
   );
 }
