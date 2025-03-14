@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link } from "@mui/material";
+import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, Divider } from "@mui/material";
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
@@ -14,7 +14,7 @@ const SignUpPage = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -42,151 +42,159 @@ const SignUpPage = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            console.log("Usuario autenticado con Google:", result.user);
-
-            setSnackbarMessage("¡Registro con Google exitoso!");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
-        } catch (error) {
-            console.error("Error con Google Sign-In:", error);
-            setSnackbarMessage("Error al registrar con Google");
-            setSnackbarSeverity("error");
-            setOpenSnackbar(true);
-        }
-    };
-
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 backgroundImage: "url('https://wallpapers.com/images/featured/coffee-bean-wmhqt5jyr77cxa4v.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
             }}
         >
-            <Paper
-                elevation={8}
-                className="rounded-xl shadow-xl p-8 md:p-12 max-w-md w-full"
+            {/* Contenedor principal */}
+            <Box
                 sx={{
-                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1",
-                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
-                    borderRadius: "8px",
-                    boxShadow:
-                        theme.palette.mode === "dark"
-                            ? "0px 8px 20px rgba(0, 0, 0, 0.5), 0px 4px 4px rgba(0, 0, 0, 0.2)"
-                            : "0px 8px 20px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.1)",
-                    padding: isSmallScreen ? "16px" : "32px",
-                    margin: isSmallScreen ? "16px" : "0",
-                    transition: "box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out",
-                    "&:hover": {
-                        boxShadow:
-                            theme.palette.mode === "dark"
-                                ? "0px 12px 30px rgba(0, 0, 0, 0.7), 0px 6px 6px rgba(0, 0, 0, 0.3)"
-                                : "0px 12px 30px rgba(0, 0, 0, 0.3), 0px 6px 6px rgba(0, 0, 0, 0.15)",
-                        transform: "scale(1.02)",
-                    },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: isSmallScreen ? "90%" : "800px",
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: "12px",
+                    boxShadow: theme.shadows[10],
+                    overflow: "hidden",
                 }}
             >
-                <Box className="flex justify-center mb-6">
-                    <Coffee />
-                </Box>
-
-                <Typography variant="h4" align="center" fontWeight="bold" mb={2}>
-                    ¡Bienvenido a Coffee Shop!
-                </Typography>
-
-                <Typography variant="body1" align="center" mb={3}>
-                    Crea tu cuenta para disfrutar del mejor café.
-                </Typography>
-
-                <form onSubmit={handleSignUp} className="space-y-4">
-                    <TextField
-                        label="Correo Electrónico"
-                        type="email"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                {/* Imagen a la izquierda (solo en pantallas grandes) */}
+                {!isSmallScreen && (
+                    <Box
                         sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3",
-                            borderRadius: "8px",
-                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
+                            flex: 1,
+                            backgroundImage: "url('https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            height: "500px",
                         }}
                     />
+                )}
 
-                    <TextField
-                        label="Contraseña"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3",
-                            borderRadius: "8px",
-                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
-                        }}
-                    />
+                {/* Formulario de registro */}
+                <Paper
+                    elevation={0}
+                    sx={{
+                        flex: 1,
+                        padding: isSmallScreen ? "24px" : "32px",
+                        backgroundColor: theme.palette.background.paper,
+                    }}
+                >
+                    <Box sx={{ textAlign: "center", mb: 4 }}>
+                        <Coffee sx={{ fontSize: 48, color: theme.palette.primary.main }} />
+                        <Typography variant="h4" sx={{ fontWeight: 700, mt: 2 }}>
+                            ¡Regístrate!
+                        </Typography>
+                        <Typography variant="body1" sx={{ mt: 1 }}>
+                            Crea tu cuenta para disfrutar del mejor café.
+                        </Typography>
+                    </Box>
 
-                    <TextField
-                        label="Confirmar Contraseña"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3",
-                            borderRadius: "8px",
-                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
-                        }}
-                    />
+                    <form onSubmit={handleSignUp}>
+                        <TextField
+                            label="Correo Electrónico"
+                            type="email"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            sx={{ mb: 3 }}
+                            InputProps={{
+                                sx: {
+                                    borderRadius: "8px",
+                                },
+                            }}
+                        />
 
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            padding: "12px",
-                            borderRadius: "8px",
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            textTransform: "none",
-                            ":hover": {
-                                backgroundColor: theme.palette.primary.dark,
-                            },
-                        }}
-                    >
-                        Crear Cuenta
-                    </Button>
+                        <TextField
+                            label="Contraseña"
+                            type="password"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            sx={{ mb: 3 }}
+                            InputProps={{
+                                sx: {
+                                    borderRadius: "8px",
+                                },
+                            }}
+                        />
 
-                </form>
+                        <TextField
+                            label="Confirmar Contraseña"
+                            type="password"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            sx={{ mb: 3 }}
+                            InputProps={{
+                                sx: {
+                                    borderRadius: "8px",
+                                },
+                            }}
+                        />
 
-                <Box mt={3} display="flex" justifyContent="space-between" textAlign="center">
-                    <Link href="/login" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
-                        ¿Ya tienes cuenta? Inicia sesión
-                    </Link>
-                </Box>
-            </Paper>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                backgroundColor: theme.palette.primary.main,
+                                padding: "12px",
+                                borderRadius: "8px",
+                                fontSize: "1rem",
+                                fontWeight: "bold",
+                                textTransform: "none",
+                                ":hover": {
+                                    backgroundColor: theme.palette.primary.dark,
+                                },
+                            }}
+                        >
+                            Crear Cuenta
+                        </Button>
+                    </form>
 
-            {loading && <Loader />}
+                    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+                        <Link href="/login" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
+                            ¿Ya tienes cuenta? Inicia sesión
+                        </Link>
+                    </Box>
+                </Paper>
+            </Box>
 
-            <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+            {/* Snackbar para mensajes */}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
                 <MuiAlert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
                     {snackbarMessage}
                 </MuiAlert>
             </Snackbar>
-        </div>
+
+            {/* Loader */}
+            {loading && <Loader />}
+        </Box>
     );
 };
 

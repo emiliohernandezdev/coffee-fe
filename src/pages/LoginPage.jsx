@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton} from "@mui/material";
+import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton, Divider } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee, Google } from "@mui/icons-material";
 import { AuthService } from '../services/AuthService';
@@ -16,19 +16,17 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const { login } = useContext(AuthContext);
 
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleTogglePassword = () => {
         setShowPassword((prev) => !prev);
     };
 
-
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await AuthService.login(email, password);
-            if (response.success == true) {
+            if (response.success) {
                 setSnackbarMessage("¡Inicio de sesión exitoso!");
                 setSnackbarSeverity("success");
                 setOpenSnackbar(true);
@@ -50,127 +48,149 @@ const LoginPage = () => {
     };
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 backgroundImage: "url('https://wallpapers.com/images/featured/coffee-bean-wmhqt5jyr77cxa4v.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
             }}
         >
-            <Paper
-                elevation={8}
-                className="rounded-xl shadow-xl p-8 md:p-12 max-w-md w-full"
+            {/* Contenedor principal */}
+            <Box
                 sx={{
-                    backgroundColor: theme.palette.mode === "dark" ? "#3C2F2A" : "#F1E5D1",
-                    color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E",
-                    borderRadius: "8px",
-                    boxShadow:
-                        theme.palette.mode === "dark"
-                            ? "0px 8px 20px rgba(0, 0, 0, 0.5), 0px 4px 4px rgba(0, 0, 0, 0.2)"
-                            : "0px 8px 20px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.1)",
-                    padding: isSmallScreen ? "16px" : "32px",
-                    margin: isSmallScreen ? "16px" : "0",
-                    transition: "box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out",
-                    "&:hover": {
-                        boxShadow:
-                            theme.palette.mode === "dark"
-                                ? "0px 12px 30px rgba(0, 0, 0, 0.7), 0px 6px 6px rgba(0, 0, 0, 0.3)"
-                                : "0px 12px 30px rgba(0, 0, 0, 0.3), 0px 6px 6px rgba(0, 0, 0, 0.15)",
-                        transform: "scale(1.02)",
-                    },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: isSmallScreen ? "90%" : "800px",
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: "12px",
+                    boxShadow: theme.shadows[10],
+                    overflow: "hidden",
                 }}
             >
-                <Box className="flex justify-center mb-6">
-                    <Coffee />
-                </Box>
-
-                <Typography variant="h4" align="center" fontWeight="bold" mb={2}>
-                    ¡Bienvenido a Coffee Shop!
-                </Typography>
-
-                <Typography variant="body1" align="center" mb={3}>
-                    Disfruta del mejor café mientras gestionas tu cuenta.
-                </Typography>
-
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <TextField
-                        label="Correo Electrónico"
-                        type="email"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                {/* Imagen a la izquierda (solo en pantallas grandes) */}
+                {!isSmallScreen && (
+                    <Box
                         sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3", // Fondo de entrada marrón oscuro en modo oscuro
-                            borderRadius: "8px",
-                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
+                            flex: 1,
+                            backgroundImage: "url('https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            height: "500px",
                         }}
                     />
+                )}
 
-                    <TextField
-                        label="Contraseña"
-                        type={showPassword ? "text" : "password"} // Cambia el tipo de input según el estado
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        sx={{
-                            backgroundColor: theme.palette.mode === "dark" ? "#5E4B3C" : "#E2D8B3", // Fondo de entrada marrón oscuro en modo oscuro
-                            borderRadius: "8px",
-                            color: theme.palette.mode === "dark" ? "#FFF" : "#3E3E3E", // Texto claro en modo oscuro
-                        }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={handleTogglePassword}
-                                        edge="end"
-                                        aria-label="toggle password visibility"
-                                    >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />} {/* Cambia el ícono según el estado */}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
+                {/* Formulario de login */}
+                <Paper
+                    elevation={0}
+                    sx={{
+                        flex: 1,
+                        padding: isSmallScreen ? "24px" : "32px",
+                        backgroundColor: theme.palette.background.paper,
+                    }}
+                >
+                    <Box sx={{ textAlign: "center", mb: 4 }}>
+                        <Coffee sx={{ fontSize: 48, color: theme.palette.primary.main }} />
+                        <Typography variant="h4" sx={{ fontWeight: 700, mt: 2 }}>
+                            ¡Bienvenido!
+                        </Typography>
+                        <Typography variant="body1" sx={{ mt: 1 }}>
+                            Inicia sesión para continuar
+                        </Typography>
+                    </Box>
 
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            padding: "12px",
-                            borderRadius: "8px",
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            textTransform: "none",
-                            ":hover": {
-                                backgroundColor: theme.palette.primary.dark,
-                            },
-                        }}
-                    >
-                        Iniciar Sesión
-                    </Button>
-                </form>
+                    <form onSubmit={handleLogin}>
+                        <TextField
+                            label="Correo Electrónico"
+                            type="email"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            sx={{ mb: 3 }}
+                            InputProps={{
+                                sx: {
+                                    borderRadius: "8px",
+                                },
+                            }}
+                        />
 
-                <Box mt={3} display="flex" justifyContent="space-between" textAlign="center">
-                    <Link href="/recover" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
-                        ¿Se te olvidó tu contraseña?
-                    </Link>
-                    <Link href="/signup" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
-                        Crear cuenta
-                    </Link>
-                </Box>
-            </Paper>
+                        <TextField
+                            label="Contraseña"
+                            type={showPassword ? "text" : "password"}
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            sx={{ mb: 3 }}
+                            InputProps={{
+                                sx: {
+                                    borderRadius: "8px",
+                                },
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={handleTogglePassword}
+                                            edge="end"
+                                            aria-label="toggle password visibility"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
 
-            <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                backgroundColor: theme.palette.primary.main,
+                                padding: "12px",
+                                borderRadius: "8px",
+                                fontSize: "1rem",
+                                fontWeight: "bold",
+                                textTransform: "none",
+                                ":hover": {
+                                    backgroundColor: theme.palette.primary.dark,
+                                },
+                            }}
+                        >
+                            Iniciar Sesión
+                        </Button>
+                    </form>
+
+                    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+                        <Link href="/recover" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
+                            ¿Olvidaste tu contraseña?
+                        </Link>
+                        <Link href="/signup" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
+                            Crear cuenta
+                        </Link>
+                    </Box>
+                </Paper>
+            </Box>
+
+            {/* Snackbar para mensajes */}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
                 <MuiAlert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
                     {snackbarMessage}
                 </MuiAlert>
             </Snackbar>
-        </div>
+        </Box>
     );
 };
 

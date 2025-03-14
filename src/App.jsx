@@ -31,6 +31,7 @@ import OrderHistoryPage from './pages/orders/OrderHistory';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WaiterView from './pages/waiter/WaiterOrders';
 import Callback from './pages/users/SpotifyCallback';
+import FeedbackFloatingButton from './components/FeedbackButton';
 
 function urlBase64ToUint8Array(base64string) {
   const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
@@ -106,39 +107,13 @@ const AppContent = () => {
           </Router>
         </div>
         <Footer />
+        <FeedbackFloatingButton />
       </div>
     </ThemeProvider>
   );
 };
 
 function App() {
-  useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => {
-          console.log('%cService worker registered', 'background-color: green');
-
-          requestNotificationPermission().then((permissionGranted) => {
-            if (permissionGranted) {
-              subscribeToPush()
-                .then((subscription) => {
-                  // console.log('Subscripcion generada', subscription);
-
-                  localStorage.setItem('pushSubscription', JSON.stringify(subscription));
-                })
-                .catch((err) => {
-                  console.log('Error al suscribir al usuario ', err);
-                });
-            }
-          });
-        })
-        .catch((err) => {
-          console.error("Error registrando el service worker");
-        });
-    } else {
-      console.warn('El navegador no soporta notificaciones');
-    }
-  }, []);
 
   return (
     <AuthProvider>
