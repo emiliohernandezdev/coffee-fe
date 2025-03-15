@@ -12,27 +12,28 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (item) => {
         setCart((prevCart) => {
-            const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
+            const existingItem = prevCart.find((cartItem) => cartItem._id === item._id);
             if (existingItem) {
                 return prevCart.map((cartItem) =>
-                    cartItem.id === item.id
+                    cartItem._id === item._id
                         ? { ...cartItem, quantity: cartItem.quantity + 1 }
                         : cartItem
                 );
             } else {
+                console.log('no existe')
                 return [...prevCart, { ...item, quantity: 1 }];
             }
         });
     };
 
     const removeFromCart = (itemId) => {
-        setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
+        setCart((prevCart) => prevCart.filter((item) => item._id !== itemId));
     };
 
     const updateQuantity = (itemId, quantity) => {
         setCart((prevCart) =>
             prevCart.map((item) =>
-                item.id === itemId ? { ...item, quantity: Math.max(1, quantity) } : item
+                item._id === itemId ? { ...item, quantity: Math.max(1, quantity) } : item
             )
         );
     };

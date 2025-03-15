@@ -32,32 +32,9 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import WaiterView from './pages/waiter/WaiterOrders';
 import Callback from './pages/users/SpotifyCallback';
 import FeedbackFloatingButton from './components/FeedbackButton';
+import ProductDetail from './pages/products/ProductDetail';
+import ScrollToTop from './components/ScrollToTop';
 
-function urlBase64ToUint8Array(base64string) {
-  const padding = '='.repeat((4 - (base64string.length % 4)) % 4);
-  const base64 = (base64string + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-}
-
-async function requestNotificationPermission() {
-  const permission = await Notification.requestPermission();
-  if (permission == 'granted') {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-async function subscribeToPush() {
-  const publicKey = 'BCUtZ_aXd1MYYCbC7Ve_Zsnh21m7edXI90n_jmt1nujlI9CwiRBEH-XnIoNEyOL9SQSOjfiozMnUxxVulYSVXo0';
-  const registration = await navigator.serviceWorker.ready;
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(publicKey),
-  });
-  return subscription;
-}
 
 const AppContent = () => {
   const { setLoading } = useContext(LoaderContext);
@@ -80,6 +57,7 @@ const AppContent = () => {
       <div className={darkMode ? "dark" : ""}>
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-500">
           <Router>
+            <ScrollToTop />
             <Appbar darkMode={darkMode} handleThemeChange={handleThemeChange} />
 
             <Routes>
@@ -103,6 +81,7 @@ const AppContent = () => {
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/waiter" element={<WaiterView />} />
               <Route path="/callback" element={<Callback />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
             </Routes>
           </Router>
         </div>

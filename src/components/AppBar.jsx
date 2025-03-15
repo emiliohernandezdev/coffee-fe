@@ -105,8 +105,7 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   const navItems = [
     { label: "Inicio", path: "/", icon: <HomeIcon /> },
-    { label: "Menú", path: "/menu", icon: <RestaurantMenuIcon /> },
-    { label: "Contactanos", path: "/contact", icon: <ContactMailIcon /> },
+    { label: "Menú", path: "/menu", icon: <RestaurantMenuIcon /> }
   ];
 
   const drawer = (

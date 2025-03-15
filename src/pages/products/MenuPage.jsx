@@ -14,22 +14,30 @@ import {
   useTheme,
   Box,
   Drawer,
-  Divider,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
   Chip,
   Rating,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Checkbox,
+  TextareaAutosize,
+  useMediaQuery,
+  FormGroup,
 } from "@mui/material";
-import { ChevronLeft, ChevronRight, Search, FilterList, ShoppingCart } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, FilterList, ShoppingCart } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import ProductsService from "../../services/ProductsService";
 import { apiConfig } from "../../services/ApiConfig";
+import { useNavigate } from "react-router-dom";
 
 const MenuPage = () => {
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Para manejar el diseño responsivo
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
@@ -44,7 +52,10 @@ const MenuPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isProductDetailOpen, setIsProductDetailOpen] = useState(false);
   const productsPerPage = 9;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -132,45 +143,70 @@ const MenuPage = () => {
     setCurrentPage(value);
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
+  const handleCloseProductDetail = () => {
+    setIsProductDetailOpen(false);
+    setSelectedProduct(null);
+  };
+
   const ProductCard = ({ product }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-    const handleNextImage = () => {
-      setCurrentImageIndex((prev) => (prev + 1) % (product.images?.length || 1));
-    };
-  
-    const handlePrevImage = () => {
-      setCurrentImageIndex(
-        (prev) => (prev - 1 + (product.images?.length || 1)) % (product.images?.length || 1)
-      );
-    };
-  
+
+    // Carrusel automático
+    useEffect(() => {
+      if (product.images?.length > 1) {
+        const interval = setInterval(() => {
+          setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+        }, 3000); // Cambia la imagen cada 3 segundos
+        return () => clearInterval(interval);
+      }
+    }, [product.images]);
+
     return (
       <motion.div
         whileHover={{ scale: 1.03 }}
         transition={{ duration: 0.2 }}
+        onClick={() => handleProductClick(product._id)}
       >
         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '12px', boxShadow: 3, overflow: 'hidden' }}>
           {/* Carrusel de imágenes */}
-          <Box sx={{ position: 'relative', width: '100%', height: 300, overflow: 'hidden' }}> {/* Aumentamos el alto a 300px */}
+          <Box sx={{ position: 'relative', width: '100%', height: 300, overflow: 'hidden' }}>
             <CardMedia
               component="img"
               sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
               image={`${apiConfig.imagesEndpoint.concat('products/')}${product.images[currentImageIndex]}`}
               alt={product.name}
             />
+            {/* Mostrar indicadores de imágenes si hay más de una */}
             {product.images?.length > 1 && (
-              <Box sx={{ position: 'absolute', top: 8, left: 8, right: 8, display: 'flex', justifyContent: 'space-between' }}>
-                <IconButton onClick={handlePrevImage} size="small" sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white' }}>
-                  <ChevronLeft />
-                </IconButton>
-                <IconButton onClick={handleNextImage} size="small" sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white' }}>
-                  <ChevronRight />
-                </IconButton>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: 8,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: 1,
+                }}
+              >
+                {product.images.map((_, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      backgroundColor: currentImageIndex === index ? theme.palette.primary.main : theme.palette.grey[500],
+                    }}
+                  />
+                ))}
               </Box>
             )}
           </Box>
-  
+
           {/* Contenido de la tarjeta */}
           <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
             <Box>
@@ -196,14 +232,6 @@ const MenuPage = () => {
               <Typography variant="body1" sx={{ fontWeight: 700, color: theme.palette.primary.main, mb: 2 }}>
                 Q{product.price.toFixed(2)}
               </Typography>
-              <Button
-                variant="contained"
-                startIcon={<ShoppingCart />}
-                fullWidth
-                sx={{ backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
-              >
-                Agregar al carrito
-              </Button>
             </Box>
           </CardContent>
         </Card>

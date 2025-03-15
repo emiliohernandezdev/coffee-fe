@@ -21,6 +21,11 @@ const ProductsService = {
         return response.data;
     },
 
+    getProductById: async (id) => {
+        const response = await api.get(`/products/${id}`);
+        return response.data;
+    },
+
     uploadImages: async (id, images) => {
         const formData = new FormData();
         images.forEach((image) => {

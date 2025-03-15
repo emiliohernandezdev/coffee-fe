@@ -3,6 +3,7 @@ import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Sna
 import Loader from "../components/Loader";
 import MuiAlert from "@mui/material/Alert";
 import { Coffee } from "@mui/icons-material";
+import { AuthService } from "../services/AuthService";
 
 const ForgotPasswordPage = () => {
     const theme = useTheme();
@@ -18,10 +19,16 @@ const ForgotPasswordPage = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await sendPasswordResetEmail(auth, email);
-            setSnackbarMessage("Te hemos enviado un enlace para restablecer tu contraseña");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
+            const data = await AuthService.forgotPassword(email);
+            if(data.success == true){
+                setSnackbarMessage("Te hemos enviado un enlace para restablecer tu contraseña");
+                setSnackbarSeverity("success");
+                setOpenSnackbar(true);
+            }else{
+                setSnackbarMessage(data.message);
+                setSnackbarSeverity("error");
+                setOpenSnackbar(true);
+            }
         } catch (error) {
             console.error("Error al enviar el correo de restablecimiento:", error);
             setSnackbarMessage("Error al enviar el correo de restablecimiento");

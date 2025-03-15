@@ -13,7 +13,10 @@ import {
   RadioGroup,
   FormControlLabel,
   useTheme,
-  InputAdornment
+  InputAdornment,
+  Box,
+  IconButton,
+  Chip,
 } from "@mui/material";
 import {
   LocalShipping,
@@ -29,9 +32,14 @@ import {
   Email,
   Phone,
   Restaurant,
-  ShoppingBag
+  ShoppingBag,
+  Delete,
+  Add,
+  Remove,
 } from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
+import { CartContext } from "../../context/CartContext";
+import { v4 as uuidv4 } from "uuid"; // Generar UUID único para la orden
 
 const steps = [
   { label: "Información de Recogida", icon: <Store /> },
@@ -43,6 +51,7 @@ const steps = [
 const CheckoutPage = () => {
   const theme = useTheme();
   const { user } = useContext(AuthContext);
+  const { cart, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
   const [activeStep, setActiveStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [formData, setFormData] = useState({
@@ -50,6 +59,7 @@ const CheckoutPage = () => {
     email: user?.email || "",
     phone: user?.phone || "",
   });
+  const [orderId] = useState(uuidv4()); // Generar un UUID único para la orden
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
@@ -67,6 +77,9 @@ const CheckoutPage = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  // Calcular el total del carrito
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const getStepContent = (step) => {
     switch (step) {
@@ -182,9 +195,107 @@ const CheckoutPage = () => {
           </RadioGroup>
         );
       case 2:
-        return <Typography variant="h6">Resumen del Pedido</Typography>;
+        return (
+          <Box>
+            <Typography variant="h6" sx={{ mb: 4 }}>
+              Resumen del Pedido
+            </Typography>
+            {cart.map((item) => (
+              <Card key={item._id} sx={{ mb: 2, boxShadow: 3 }}>
+                <CardContent>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={8}>
+                      <Typography variant="h6">{item.name}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {item.description}
+                      </Typography>
+                      {item.extras && item.extras.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant="body2" color="textSecondary">
+                            Extras:
+                          </Typography>
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                            {item.extras.map((extra) => (
+                              <Chip key={extra._id} label={extra.name} size="small" />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
+                      {item.options && item.options.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant="body2" color="textSecondary">
+                            Opciones:
+                          </Typography>
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                            {item.options.map((option) => (
+                              <Chip key={option._id} label={option.name} size="small" />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
+                    </Grid>
+                    <Grid item xs={4} sx={{ textAlign: "right" }}>
+                      <Typography variant="body1" sx={{ fontWeight: 700 }}>
+                        Q{(item.price * item.quantity).toFixed(2)}
+                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                        <IconButton
+                          onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                          size="small"
+                          disabled={item.quantity <= 1}
+                        >
+                          <Remove />
+                        </IconButton>
+                        <TextField
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const newQuantity = parseInt(e.target.value);
+                            if (!isNaN(newQuantity) && newQuantity >= 1) {
+                              updateQuantity(item._id, newQuantity);
+                            }
+                          }}
+                          type="number"
+                          inputProps={{ min: 1 }}
+                          sx={{ width: "60px", textAlign: "center" }}
+                        />
+                        <IconButton
+                          onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                          size="small"
+                        >
+                          <Add />
+                        </IconButton>
+                      </Box>
+                      <IconButton
+                        onClick={() => removeFromCart(item._id)}
+                        sx={{ color: theme.palette.error.main }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ))}
+            <Typography variant="h6" sx={{ mt: 4, textAlign: "right" }}>
+              Total: Q{total.toFixed(2)}
+            </Typography>
+          </Box>
+        );
       case 3:
-        return <Typography variant="h6">¡Gracias por tu compra! Tu pedido ha sido confirmado.</Typography>;
+        return (
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h6" sx={{ mb: 4 }}>
+              ¡Gracias por tu compra! Tu pedido ha sido confirmado.
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 4 }}>
+              Escanea el siguiente código QR para verificar tu pedido:
+            </Typography>
+            
+            <Typography variant="body2" sx={{ mt: 2, color: theme.palette.text.secondary }}>
+              ID de la orden: {orderId}
+            </Typography>
+          </Box>
+        );
       default:
         return "Paso desconocido";
     }
