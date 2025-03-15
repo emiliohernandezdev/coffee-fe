@@ -16,34 +16,22 @@ const ProductsService = {
         return await url;
     },
 
-    addProduct: async (e, name, description, price, available, categories, extras, images) => {
-        e.preventDefault();
+    addProduct: async (product) => {
+        const response = await api.post("/products/add", product);
+        return response.data;
+    },
 
+    uploadImages: async (id, images) => {
         const formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("price", parseFloat(price)); // Asegurar número
-        formData.append("available", JSON.stringify(available)); // Convertir a JSON booleano
-
-        // Enviar categorías como JSON
-        formData.append("categories", JSON.stringify(categories));
-
-        // Enviar opciones y extras como JSON
-        // formData.append("options", JSON.stringify(options));
-        formData.append("extras", JSON.stringify(extras));
-
-        formData.append("files", images);
-
-        const response = await api.post("/products/add", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+        images.forEach((image) => {
+            formData.append('files', image);
         });
+
+        const response = await api.post(`/products/${id}/images`, formData);
         return response.data;
     },
 
     updateTable: async (id, updates) => {
-
         var body = { ...updates, id: id };
         const response = await axios.put(`${API_URL}/update`, body);
         return response.data;

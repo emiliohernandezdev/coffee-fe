@@ -37,8 +37,8 @@ const MenuPage = () => {
     minPrice: "",
     maxPrice: "",
     category: "",
-    dietary: [], // Filtros de dieta (vegano, sin gluten, etc.)
-    sortBy: "price_asc", // Ordenar por precio ascendente/descendente
+    dietary: [],
+    sortBy: "price_asc",
   });
   const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,7 +110,6 @@ const MenuPage = () => {
       );
     }
 
-    // Ordenar productos
     if (filters.sortBy === "price_asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (filters.sortBy === "price_desc") {
@@ -119,7 +118,7 @@ const MenuPage = () => {
 
     setFilteredProducts(result);
     setCurrentPage(1);
-    setIsFilterOpen(false); // Cerrar el panel de filtros después de aplicar
+    setIsFilterOpen(false);
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -135,28 +134,28 @@ const MenuPage = () => {
 
   const ProductCard = ({ product }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  
     const handleNextImage = () => {
       setCurrentImageIndex((prev) => (prev + 1) % (product.images?.length || 1));
     };
-
+  
     const handlePrevImage = () => {
       setCurrentImageIndex(
         (prev) => (prev - 1 + (product.images?.length || 1)) % (product.images?.length || 1)
       );
     };
-
+  
     return (
       <motion.div
         whileHover={{ scale: 1.03 }}
         transition={{ duration: 0.2 }}
       >
-        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '12px', boxShadow: 3 }}>
+        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '12px', boxShadow: 3, overflow: 'hidden' }}>
           {/* Carrusel de imágenes */}
-          <Box sx={{ position: 'relative', flexGrow: 1 }}>
+          <Box sx={{ position: 'relative', width: '100%', height: 300, overflow: 'hidden' }}> {/* Aumentamos el alto a 300px */}
             <CardMedia
               component="img"
-              sx={{ height: 200, objectFit: 'cover', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}
+              sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
               image={`${apiConfig.imagesEndpoint.concat('products/')}${product.images[currentImageIndex]}`}
               alt={product.name}
             />
@@ -171,9 +170,9 @@ const MenuPage = () => {
               </Box>
             )}
           </Box>
-
+  
           {/* Contenido de la tarjeta */}
-          <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
             <Box>
               <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
                 {product.name}
@@ -188,14 +187,14 @@ const MenuPage = () => {
               </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
                 {product.extras?.map((extra) => (
-                  <Chip key={extra._id} label={`${extra.name} (+$${extra.price})`} size="small" variant="outlined" />
+                  <Chip key={extra._id} label={`${extra.name} (+Q${extra.price})`} size="small" variant="outlined" />
                 ))}
               </Box>
               <Rating value={product.rating} precision={0.5} readOnly sx={{ mb: 2 }} />
             </Box>
             <Box>
               <Typography variant="body1" sx={{ fontWeight: 700, color: theme.palette.primary.main, mb: 2 }}>
-                ${product.price.toFixed(2)}
+                Q{product.price.toFixed(2)}
               </Typography>
               <Button
                 variant="contained"

@@ -18,8 +18,8 @@ const OrderSummary = () => {
         {cart.map((item) => (
           <ListItem key={item.id}>
             <ListItemText
-              primary={`${item.name} - ${item.quantity} x $${item.price}`}
-              secondary={`Total: $${item.price * item.quantity}`}
+              primary={`${item.name} - ${item.quantity} x Q${item.price}`}
+              secondary={`Total: Q${item.price * item.quantity}`}
             />
             <Button
               variant="outlined"

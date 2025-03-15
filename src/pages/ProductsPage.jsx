@@ -137,7 +137,7 @@ const ProductsPage = () => {
                     </Typography>
                   </div>
                   <Typography variant="body1" className="mt-2 font-semibold" style={{ color: theme.palette.primary.main }}>
-                    ${product.price}
+                    Q{product.price}
                   </Typography>
                   <Button variant="contained" color="primary" size="small" className="mt-4">
                     Agregar al Carrito

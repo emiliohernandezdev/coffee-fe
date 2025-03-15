@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export const apiConfig = {
-    baseURL: 'http://KernelOS-PC:4000/api/v1/',
-    socketUrl: 'http://KernelOS-PC:4000',
-    imagesEndpoint: 'http://KernelOS-PC:4000/',
+    baseURL: 'http://192.168.0.12:4000/api/v1/',
+    socketUrl: 'http://192.168.0.12:4000',
+    imagesEndpoint: 'http://192.168.0.12:4000/',
 };
 
 const api = axios.create({
