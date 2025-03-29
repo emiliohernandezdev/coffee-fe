@@ -8,15 +8,11 @@ const CategoryService = {
     },
 
     addCategory: async (name, description) => {
-        try{
-            const response = await api.post(`/category/add`, {
-                name: name,
-                description: description
-            });
-            return response.data;
-        }catch(err){
-            
-        }
+        const response = await api.post(`/category/add`, {
+            name: name,
+            description: description
+        });
+        return response.data;
     },
 };
 

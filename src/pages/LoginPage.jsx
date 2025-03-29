@@ -1,36 +1,58 @@
 import { useContext, useState } from "react";
-import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton, Divider } from "@mui/material";
+import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import { Coffee, Google } from "@mui/icons-material";
+import { Coffee } from "@mui/icons-material";
 import { AuthService } from '../services/AuthService';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AuthContext } from "../context/AuthContext";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+
+const loginSchema = Yup.object().shape({
+    email: Yup
+        .string()
+        .email("Correo electrónico inválido")
+        .required("Campo requerido"),
+    password: Yup
+        .string()
+        .min(6, "La contraseña debe tener al menos 6 caracteres")
+        .required("Campo requerido"),
+});
 
 const LoginPage = () => {
     const theme = useTheme();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     const [showPassword, setShowPassword] = useState(false);
     const { login } = useContext(AuthContext);
-
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+    // Configuración de React Hook Form
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm({
+        resolver: yupResolver(loginSchema),
+        mode: "onBlur",
+    });
 
     const handleTogglePassword = () => {
         setShowPassword((prev) => !prev);
     };
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         try {
-            const response = await AuthService.login(email, password);
+            const response = await AuthService.login(data.email, data.password);
             if (response.success) {
                 setSnackbarMessage("¡Inicio de sesión exitoso!");
                 setSnackbarSeverity("success");
                 setOpenSnackbar(true);
                 login(response.token);
+                reset();
             } else {
                 setSnackbarMessage(response.message);
                 setSnackbarSeverity("error");
@@ -59,7 +81,6 @@ const LoginPage = () => {
                 backgroundPosition: "center",
             }}
         >
-            {/* Contenedor principal */}
             <Box
                 sx={{
                     display: "flex",
@@ -72,7 +93,6 @@ const LoginPage = () => {
                     overflow: "hidden",
                 }}
             >
-                {/* Imagen a la izquierda (solo en pantallas grandes) */}
                 {!isSmallScreen && (
                     <Box
                         sx={{
@@ -85,7 +105,6 @@ const LoginPage = () => {
                     />
                 )}
 
-                {/* Formulario de login */}
                 <Paper
                     elevation={0}
                     sx={{
@@ -104,15 +123,15 @@ const LoginPage = () => {
                         </Typography>
                     </Box>
 
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <TextField
                             label="Correo Electrónico"
                             type="email"
                             variant="outlined"
                             fullWidth
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            {...register("email")}
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
                             sx={{ mb: 3 }}
                             InputProps={{
                                 sx: {
@@ -126,9 +145,9 @@ const LoginPage = () => {
                             type={showPassword ? "text" : "password"}
                             variant="outlined"
                             fullWidth
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            {...register("password")}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
                             sx={{ mb: 3 }}
                             InputProps={{
                                 sx: {
@@ -152,6 +171,7 @@ const LoginPage = () => {
                             type="submit"
                             variant="contained"
                             fullWidth
+                            disabled={isSubmitting}
                             sx={{
                                 backgroundColor: theme.palette.primary.main,
                                 padding: "12px",
@@ -164,7 +184,7 @@ const LoginPage = () => {
                                 },
                             }}
                         >
-                            Iniciar Sesión
+                            {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
                         </Button>
                     </form>
 
@@ -179,7 +199,6 @@ const LoginPage = () => {
                 </Paper>
             </Box>
 
-            {/* Snackbar para mensajes */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={3000}

@@ -7,14 +7,14 @@ const TablesService = {
     },
     
     addTable: async (table) => {
-        const response = await api.post("/add", table);
+        const response = await api.post("/tables/add", table);
         return response.data["result"];
     },
 
     updateTable: async (id, updates) => {
 
         var body = {...updates, id: id};
-        const response = await api.put(`/update`, body);
+        const response = await api.put(`/tables/update`, body);
         return response.data["result"];
     },
 
