@@ -138,11 +138,11 @@ const HomePage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 1 }}
         >
-          <Typography variant="h3" className="text-5xl font-bold mb-4" style={{ color: theme.palette.text.primary }}>
+          <Typography variant="h3" className="text-5xl font-bold mb-4" style={{ color: theme.palette.background.default}}>
             Bienvenido a Coffee Shop
           </Typography>
-          <Typography variant="h6" className="mb-8 text-lg max-w-3xl mx-auto" style={{ color: theme.palette.text.secondary }}>
-            El mejor café para tu día, directo a tu taza.
+          <Typography variant="h6" className="mb-8 text-lg max-w-3xl mx-auto" style={{ color: theme.palette.background.default }}>
+            El mejor café para tu día, directo en tu taza.
           </Typography>
           <br />
           <Button
@@ -157,7 +157,7 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Productos Destacados con Grid */}
+      {/* Productos Destacados con Grid del mismo tamanio */}
       <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
         <Container>
           <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
@@ -167,14 +167,34 @@ const HomePage = () => {
             {featuredProducts.map((product, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <motion.div whileHover={{ scale: 1.05 }} className="transition duration-300 ease-in-out">
-                  <Card className="shadow-lg rounded-lg overflow-hidden">
+                  <Card
+                    className="shadow-lg rounded-lg overflow-hidden"
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%',
+                    }}
+                  >
                     <CardMedia
                       component="img"
-                      height="200"
                       image={product.image}
                       alt={product.title}
+                      sx={{
+                        width: '100%',
+                        height: 200,
+                        objectFit: 'cover',
+                      }}
                     />
-                    <CardContent sx={{ paddingTop: "16px", textAlign: "center" }}>
+                    <CardContent
+                      sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        padding: '16px',
+                      }}
+                    >
                       <Typography variant="h6" fontWeight="bold" style={{ color: theme.palette.text.primary }}>
                         {product.title}
                       </Typography>

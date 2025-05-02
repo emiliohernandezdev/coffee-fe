@@ -151,7 +151,11 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   return (
     <>
-      <AppBar position="sticky" color="primary" className="shadow-lg">
+      <AppBar
+        position="sticky"
+        sx={{ backgroundColor: theme.palette.primary.main }} 
+        className="shadow-lg"
+      >
         <Toolbar>
           <IconButton
             edge="start"

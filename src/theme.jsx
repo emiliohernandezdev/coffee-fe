@@ -4,19 +4,19 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#5D4037', // Café oscuro (más contrastante)
-      contrastText: '#FFFFFF', // Blanco para texto sobre fondos oscuros
+      main: '#372414', // Café oscuro (más contrastante) #5D4037 Emilio Colors 
+      contrastText: '#f2f0e9', // Blanco para texto sobre fondos oscuros
     },
     secondary: {
       main: '#8D6E63', // Café más claro
     },
     background: {
-      default: '#FFF8E1', // Beige claro (fondo suave)
-      paper: '#FFFFFF', // Blanco para tarjetas y contenedores
+      default: '#f2f0e9', // Beige claro (fondo suave) #FFF8E1 Emilio Colors
+      paper: '#f2f0e9', // Blanco para tarjetas y contenedores
     },
     text: {
       primary: '#3E2723', // Café muy oscuro para texto principal
-      secondary: '#5D4037', // Café oscuro para texto secundario
+      secondary: '#674831', // Café oscuro para texto secundario #5D4037 Emilio Colors
     },
     action: {
       hover: '#A1887F', // Café medio para hovers

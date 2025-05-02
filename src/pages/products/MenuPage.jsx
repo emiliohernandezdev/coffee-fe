@@ -28,6 +28,7 @@ import {
   TextareaAutosize,
   useMediaQuery,
   FormGroup,
+  Slider,
 } from "@mui/material";
 import { ChevronLeft, ChevronRight, FilterList, ShoppingCart } from "@mui/icons-material";
 import { motion } from "framer-motion";
@@ -56,6 +57,12 @@ const MenuPage = () => {
   const [isProductDetailOpen, setIsProductDetailOpen] = useState(false);
   const productsPerPage = 9;
   const navigate = useNavigate();
+  const [priceRange, setPriceRange] = useState([10, 100]); 
+
+  const handlePriceRangeChange = (event, newValue) => {
+    setPriceRange(newValue);
+    setFilters({ ...filters, minPrice: newValue[0], maxPrice: newValue[1] });
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -240,70 +247,64 @@ const MenuPage = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Filtros en pantallas grandes */}
-      <Box sx={{ display: { xs: 'none', md: 'block' }, p: 3, backgroundColor: theme.palette.background.paper, boxShadow: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', minHeight: '100vh' }}>
+      {/* Sidebar de Filtros */}
+      <Box
+        sx={{
+          width: { xs: '100%', md: 300 },
+          flexShrink: 0,
+          p: 3,
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: 3,
+          display: { xs: isFilterOpen ? 'block' : 'none', md: 'block' },
+        }}
+      >
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           Filtros
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              label="Nombre"
-              name="name"
-              value={filters.name}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <TextField
-              fullWidth
-              label="Precio Mínimo"
-              name="minPrice"
-              type="number"
-              value={filters.minPrice}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <TextField
-              fullWidth
-              label="Precio Máximo"
-              name="maxPrice"
-              type="number"
-              value={filters.maxPrice}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              label="Categoría"
-              name="category"
-              select
-              value={filters.category}
-              onChange={handleFilterChange}
-            >
-              <MenuItem value="">Todas</MenuItem>
-              {categories.map((cat, index) => (
-                <MenuItem key={index} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              variant="contained"
-              onClick={applyFilters}
-              fullWidth
-              sx={{ backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
-            >
-              Buscar
-            </Button>
-          </Grid>
-        </Grid>
+        <TextField
+          fullWidth
+          label="Nombre"
+          name="name"
+          value={filters.name}
+          onChange={handleFilterChange}
+          sx={{ mb: 2 }}
+        />
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          Rango de Precios (Q{priceRange[0]} - Q{priceRange[1]})
+        </Typography>
+        <Slider
+          value={priceRange}
+          onChange={handlePriceRangeChange}
+          valueLabelDisplay="auto"
+          min={10}
+          max={100}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          label="Categoría"
+          name="category"
+          select
+          value={filters.category}
+          onChange={handleFilterChange}
+          sx={{ mb: 2 }}
+        >
+          <MenuItem value="">Todas</MenuItem>
+          {categories.map((cat, index) => (
+            <MenuItem key={index} value={cat}>
+              {cat}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button
+          variant="contained"
+          onClick={applyFilters}
+          fullWidth
+          sx={{ mt: 2, backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
+        >
+          Aplicar Filtros
+        </Button>
       </Box>
 
       {/* Contenido Principal */}
@@ -363,79 +364,6 @@ const MenuPage = () => {
           </>
         )}
       </Box>
-
-      {/* Sidebar de Filtros en móvil */}
-      <Drawer
-        variant="temporary"
-        open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        sx={{
-          width: 300,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 300,
-            boxSizing: 'border-box',
-            borderRight: 'none',
-            boxShadow: 3,
-          },
-        }}
-      >
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Filtros
-          </Typography>
-          <TextField
-            fullWidth
-            label="Nombre"
-            name="name"
-            value={filters.name}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Precio Mínimo"
-            name="minPrice"
-            type="number"
-            value={filters.minPrice}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Precio Máximo"
-            name="maxPrice"
-            type="number"
-            value={filters.maxPrice}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Categoría"
-            name="category"
-            select
-            value={filters.category}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          >
-            <MenuItem value="">Todas</MenuItem>
-            {categories.map((cat, index) => (
-              <MenuItem key={index} value={cat}>
-                {cat}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Button
-            variant="contained"
-            onClick={applyFilters}
-            fullWidth
-            sx={{ mt: 2, backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
-          >
-            Aplicar Filtros
-          </Button>
-        </Box>
-      </Drawer>
     </Box>
   );
 };
