@@ -11,7 +11,7 @@ export const lightTheme = createTheme({
       main: '#8D6E63', // Café más claro
     },
     background: {
-      default: '#f2f0e9', // Beige claro (fondo suave) #FFF8E1 Emilio Colors
+      default: '#fff', // Beige claro (fondo suave)rgb(246, 244, 237) Emilio Colors
       paper: '#f2f0e9', // Blanco para tarjetas y contenedores
     },
     text: {
@@ -127,7 +127,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#D4A55E', // Café dorado (como el color de un espresso cremoso)
+      main: '#1E1E1E', // Café dorado (como el color de un espresso cremoso)
       contrastText: '#FFFFFF', // Texto blanco
     },
     secondary: {

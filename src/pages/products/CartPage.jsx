@@ -92,27 +92,44 @@ const CartPage = () => {
                         <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
                           {truncateDescription(item.description, 50)} {/* Truncar la descripción */}
                         </Typography>
-                        {/* Mostrar Extras y Opciones */}
-                        {item.extras && item.extras.length > 0 && (
-                          <Box sx={{ mt: 1 }}>
-                            <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                              Extras:
-                            </Typography>
-                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                              {item.extras.map((extra, index) => (
-                                <Chip key={extra._id} label={extra.name} size="small" />
-                              ))}
-                            </Box>
-                          </Box>
+                        {/* Mostrar Extras y Opciones para productos normales */}
+                        {!item.isPromotion && (
+                          <>
+                            {item.extras && item.extras.length > 0 && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                                  Extras:
+                                </Typography>
+                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                  {item.extras.map((extra, index) => (
+                                    <Chip key={extra._id} label={extra.name} size="small" />
+                                  ))}
+                                </Box>
+                              </Box>
+                            )}
+                            {item.options && item.options.length > 0 && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                                  Opciones:
+                                </Typography>
+                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                  {item.options.map((option, index) => (
+                                    <Chip key={option._id} label={option.name} size="small" />
+                                  ))}
+                                </Box>
+                              </Box>
+                            )}
+                          </>
                         )}
-                        {item.options && item.options.length > 0 && (
+                        {/* Mostrar productos incluidos para promociones */}
+                        {item.isPromotion && item.products && (
                           <Box sx={{ mt: 1 }}>
                             <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                              Opciones:
+                              Productos incluidos:
                             </Typography>
                             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                              {item.options.map((option, index) => (
-                                <Chip key={option._id} label={option.name} size="small" />
+                              {item.products.map((product) => (
+                                <Chip key={product._id} label={product.name} size="small" color="primary" />
                               ))}
                             </Box>
                           </Box>

@@ -138,10 +138,10 @@ const HomePage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 1 }}
         >
-          <Typography variant="h3" className="text-5xl font-bold mb-4" style={{ color: theme.palette.background.default}}>
+          <Typography variant="h3" className="text-5xl font-bold mb-4" style={{ color: theme.palette.primary.contrastText}}>
             Bienvenido a Coffee Shop
           </Typography>
-          <Typography variant="h6" className="mb-8 text-lg max-w-3xl mx-auto" style={{ color: theme.palette.background.default }}>
+          <Typography variant="h6" className="mb-8 text-lg max-w-3xl mx-auto" style={{ color: theme.palette.primary.contrastText }}>
             El mejor café para tu día, directo en tu taza.
           </Typography>
           <br />

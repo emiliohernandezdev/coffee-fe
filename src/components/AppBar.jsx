@@ -37,7 +37,7 @@ import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
-import MusicIcon from "@mui/icons-material/MusicNote";
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -105,7 +105,8 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   const navItems = [
     { label: "Inicio", path: "/", icon: <HomeIcon /> },
-    { label: "Menú", path: "/menu", icon: <RestaurantMenuIcon /> }
+    { label: "Menú", path: "/menu", icon: <RestaurantMenuIcon /> },
+    { label: "Promociones", path: "/promotions", icon: <LocalOfferIcon /> }
   ];
 
   const drawer = (

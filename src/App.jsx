@@ -34,7 +34,9 @@ import Callback from './pages/users/SpotifyCallback';
 import FeedbackFloatingButton from './components/FeedbackButton';
 import ProductDetail from './pages/products/ProductDetail';
 import ScrollToTop from './components/ScrollToTop';
-
+import PromotionsPage from './pages/promotions/PromotionsPage';
+import AddPromotion from './pages/promotions/AddPromotion';
+import PromotionDetail from './pages/promotions/PromotionDetail';
 
 const AppContent = () => {
   const { setLoading } = useContext(LoaderContext);
@@ -63,10 +65,12 @@ const AppContent = () => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductsPage />} />
-              <Route path="/login" element={<LoginPage />} />
+              <Route path="/promotions" element={<PromotionsPage />} />
+              <Route path="/promotion/add" element={<AddPromotion />} />
+          <Route path="/promotion/:id" element={<PromotionDetail />} />
+          <Route path="/login" element={<LoginPage />} />
               <Route path="/recover" element={<ForgotPasswordPage />} />
               <Route path="/signup" element={<SignupPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/product/add" element={<AddProductPage />} />
               <Route path="/category/add" element={<AddCategoryPage />} />
               <Route path="/tables" element={<TableMap />} />
@@ -93,7 +97,6 @@ const AppContent = () => {
 };
 
 function App() {
-
   return (
     <AuthProvider>
       <CartProvider>
