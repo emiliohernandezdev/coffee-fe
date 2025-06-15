@@ -1,61 +1,57 @@
-import React, { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
 import {
-  Grid,
+  Box,
   Typography,
   Card,
   CardMedia,
   CardContent,
-  IconButton,
-  TextField,
+  Divider,
+  Slider,
+  Select,
   MenuItem,
-  Button,
-  Pagination,
-  Skeleton,
-  useTheme,
-  Box,
-  Drawer,
-  Chip,
-  Rating,
-  Dialog,
-  DialogContent,
-  DialogActions,
   FormControl,
-  FormLabel,
+  InputLabel,
   RadioGroup,
   FormControlLabel,
   Radio,
+  Rating,
+  Skeleton,
+  Drawer,
+  Button,
   Checkbox,
-  TextareaAutosize,
-  useMediaQuery,
-  FormGroup,
+  TextField,
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormHelperText,
+  IconButton
 } from "@mui/material";
-import { ChevronLeft, ChevronRight, FilterList, ShoppingCart } from "@mui/icons-material";
+import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import MenuIcon from "@mui/icons-material/Menu";
 import ProductsService from "../../services/ProductsService";
 import { apiConfig } from "../../services/ApiConfig";
-import { useNavigate } from "react-router-dom";
+import { CartContext } from "../../context/CartContext";
 
 const MenuPage = () => {
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Para manejar el diseño responsivo
+  const { palette } = useTheme();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [filters, setFilters] = useState({
-    name: "",
-    minPrice: "",
-    maxPrice: "",
-    category: "",
-    dietary: [],
-    sortBy: "price_asc",
-  });
   const [categories, setCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { addToCart } = useContext(CartContext);
+
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isProductDetailOpen, setIsProductDetailOpen] = useState(false);
-  const productsPerPage = 9;
-  const navigate = useNavigate();
+
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedExtras, setSelectedExtras] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,7 +60,13 @@ const MenuPage = () => {
         if (data.success) {
           setProducts(data.products);
           setFilteredProducts(data.products);
-          const uniqueCategories = [...new Set(data.products.flatMap((p) => p.categories.map((c) => c.name)))];
+          const uniqueCategories = [
+            ...new Set(
+              data.products.flatMap((p) =>
+                p.categories.map((c) => c.name)
+              )
+            ),
+          ];
           setCategories(uniqueCategories);
         }
       } catch (error) {
@@ -77,365 +79,367 @@ const MenuPage = () => {
     fetchProducts();
   }, []);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setQuantity(1);
+    setNotes("");
+    setSelectedExtras([]);
+    const initialOptions = {};
+    product.options?.forEach((opt) => {
+      initialOptions[opt._id] = "";
+    });
+    setSelectedOptions(initialOptions);
+    setErrors({});
+    setModalOpen(true);
   };
 
-  const handleDietaryChange = (e) => {
-    const { value, checked } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      dietary: checked
-        ? [...prevFilters.dietary, value]
-        : prevFilters.dietary.filter((item) => item !== value),
-    }));
-  };
-
-  const applyFilters = () => {
-    let result = products;
-
-    if (filters.name) {
-      result = result.filter((p) =>
-        p.name.toLowerCase().includes(filters.name.toLowerCase())
-      );
-    }
-
-    if (filters.minPrice) {
-      result = result.filter((p) => p.price >= parseFloat(filters.minPrice));
-    }
-
-    if (filters.maxPrice) {
-      result = result.filter((p) => p.price <= parseFloat(filters.maxPrice));
-    }
-
-    if (filters.category) {
-      result = result.filter((p) =>
-        p.categories.some((c) => c.name === filters.category)
-      );
-    }
-
-    if (filters.dietary.length > 0) {
-      result = result.filter((p) =>
-        filters.dietary.every((diet) => p.dietaryOptions?.includes(diet))
-      );
-    }
-
-    if (filters.sortBy === "price_asc") {
-      result.sort((a, b) => a.price - b.price);
-    } else if (filters.sortBy === "price_desc") {
-      result.sort((a, b) => b.price - a.price);
-    }
-
-    setFilteredProducts(result);
-    setCurrentPage(1);
-    setIsFilterOpen(false);
-  };
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
-  };
-
-  const handleCloseProductDetail = () => {
-    setIsProductDetailOpen(false);
+  const closeModal = () => {
+    setModalOpen(false);
     setSelectedProduct(null);
   };
 
-  const ProductCard = ({ product }) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Manejo selección opciones
+  const handleOptionChange = (optionId, value) => {
+    setSelectedOptions((prev) => ({ ...prev, [optionId]: value }));
+    setErrors((prev) => ({ ...prev, [optionId]: null }));
+  };
 
-    // Carrusel automático
-    useEffect(() => {
-      if (product.images?.length > 1) {
-        const interval = setInterval(() => {
-          setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
-        }, 3000); // Cambia la imagen cada 3 segundos
-        return () => clearInterval(interval);
-      }
-    }, [product.images]);
-
-    return (
-      <motion.div
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.2 }}
-        onClick={() => handleProductClick(product._id)}
-      >
-        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '12px', boxShadow: 3, overflow: 'hidden' }}>
-          {/* Carrusel de imágenes */}
-          <Box sx={{ position: 'relative', width: '100%', height: 300, overflow: 'hidden' }}>
-            <CardMedia
-              component="img"
-              sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              image={`${apiConfig.imagesEndpoint.concat('products/')}${product.images[currentImageIndex]}`}
-              alt={product.name}
-            />
-            {/* Mostrar indicadores de imágenes si hay más de una */}
-            {product.images?.length > 1 && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 8,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  display: 'flex',
-                  gap: 1,
-                }}
-              >
-                {product.images.map((_, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: currentImageIndex === index ? theme.palette.primary.main : theme.palette.grey[500],
-                    }}
-                  />
-                ))}
-              </Box>
-            )}
-          </Box>
-
-          {/* Contenido de la tarjeta */}
-          <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-                {product.name}
-              </Typography>
-              <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 2 }}>
-                {product.description}
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                {product.categories.map((cat) => (
-                  <Chip key={cat._id} label={cat.name} size="small" />
-                ))}
-              </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                {product.extras?.map((extra) => (
-                  <Chip key={extra._id} label={`${extra.name} (+Q${extra.price})`} size="small" variant="outlined" />
-                ))}
-              </Box>
-              <Rating value={product.rating} precision={0.5} readOnly sx={{ mb: 2 }} />
-            </Box>
-            <Box>
-              <Typography variant="body1" sx={{ fontWeight: 700, color: theme.palette.primary.main, mb: 2 }}>
-                Q{product.price.toFixed(2)}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </motion.div>
+  // Manejo selección extras (checkboxes)
+  const handleExtraToggle = (extra) => {
+    setSelectedExtras((prev) =>
+      prev.includes(extra)
+        ? prev.filter((e) => e !== extra)
+        : [...prev, extra]
     );
   };
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Filtros en pantallas grandes */}
-      <Box sx={{ display: { xs: 'none', md: 'block' }, p: 3, backgroundColor: theme.palette.background.paper, boxShadow: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-          Filtros
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              label="Nombre"
-              name="name"
-              value={filters.name}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <TextField
-              fullWidth
-              label="Precio Mínimo"
-              name="minPrice"
-              type="number"
-              value={filters.minPrice}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <TextField
-              fullWidth
-              label="Precio Máximo"
-              name="maxPrice"
-              type="number"
-              value={filters.maxPrice}
-              onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              label="Categoría"
-              name="category"
-              select
-              value={filters.category}
-              onChange={handleFilterChange}
-            >
-              <MenuItem value="">Todas</MenuItem>
-              {categories.map((cat, index) => (
-                <MenuItem key={index} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              variant="contained"
-              onClick={applyFilters}
-              fullWidth
-              sx={{ backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
-            >
-              Buscar
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+  // Validar antes de agregar
+  const validate = () => {
+    const newErrors = {};
+    selectedProduct.options?.forEach((opt) => {
+      if (opt.required && !selectedOptions[opt._id]) {
+        newErrors[opt._id] = "Esta opción es requerida";
+      }
+    });
+    if (quantity < 1) {
+      newErrors.quantity = "La cantidad debe ser al menos 1";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-      {/* Contenido Principal */}
-      <Box sx={{ flexGrow: 1, p: 4 }}>
-        {/* Botón para abrir filtros en móvil */}
+  // Agregar al carrito (aquí solo demo)
+  const handleAddToCart = () => {
+
+    addToCart(selectedProduct);
+
+    closeModal();
+  };
+
+  const FiltersContent = (
+    <Box
+      className="w-64 p-6"
+      style={{ backgroundColor: palette.background.paper }}
+    >
+      <Typography
+        variant="h5"
+        component="div"
+        className="text-gray-800 dark:text-white mb-6 font-bold"
+      >
+        Menú
+      </Typography>
+      <Divider className="mb-4" />
+
+      <Typography className="text-gray-700 dark:text-neutral-300 mb-2 font-medium">
+        Filtrar por precio
+      </Typography>
+      <Slider valueLabelDisplay="auto" min={0} max={100} className="mb-6" />
+
+      <FormControl fullWidth className="mb-6">
+        <InputLabel className="text-gray-700 dark:text-neutral-300">
+          Categoría
+        </InputLabel>
+        <Select defaultValue="">
+          {categories.map((cat) => (
+            <MenuItem key={cat} value={cat}>
+              {cat}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <Typography className="text-gray-700 dark:text-neutral-300 mb-2 font-medium">
+        Ordenar por
+      </Typography>
+      <RadioGroup defaultValue="popular" className="mb-4">
+        <FormControlLabel
+          value="popular"
+          control={<Radio />}
+          label="Más popular"
+        />
+        <FormControlLabel
+          value="price-asc"
+          control={<Radio />}
+          label="Precio: bajo a alto"
+        />
+        <FormControlLabel
+          value="price-desc"
+          control={<Radio />}
+          label="Precio: alto a bajo"
+        />
+      </RadioGroup>
+
+      <Typography className="text-gray-700 dark:text-neutral-300 mb-2 font-medium">
+        Disponibilidad
+      </Typography>
+      <FormControlLabel control={<Checkbox />} label="Solo disponibles" className="mb-4" />
+
+      <Typography className="text-gray-700 dark:text-neutral-300 mb-2 font-medium">
+        Buscar por nombre
+      </Typography>
+      <TextField
+        fullWidth
+        placeholder="Buscar..."
+        variant="outlined"
+        size="small"
+        className="mb-6"
+      />
+    </Box>
+  );
+
+  return (
+    <Box className="flex flex-col md:flex-row min-h-screen">
+      {/* Botón para abrir drawer en modo móvil */}
+      <Box className="md:hidden p-4">
         <Button
-          variant="contained"
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          startIcon={<FilterList />}
-          sx={{ mb: 4, display: { xs: 'flex', md: 'none' }, backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
+          variant="outlined"
+          startIcon={<MenuIcon className="text-gray-800 dark:text-white" />}
+          onClick={() => setDrawerOpen(true)}
         >
           Filtros
         </Button>
+      </Box>
 
-        {/* Título */}
-        <Typography variant="h4" sx={{ textAlign: 'center', mb: 4, fontWeight: 700, color: theme.palette.text.primary }}>
-          Menú de la Cafetería
-        </Typography>
+      {/* Sidebar en escritorio */}
+      <Box className="hidden md:block w-64 shadow-md">
+        {FiltersContent}
+      </Box>
 
-        {/* Lista de Productos */}
+      {/* Drawer para móviles */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        {FiltersContent}
+      </Drawer>
+
+      {/* Contenido principal */}
+      <Box className="flex-1 p-4 md:p-6">
         {loading ? (
-          <Grid container spacing={4}>
-            {[...Array(productsPerPage)].map((_, index) => (
-              <Grid item key={index} xs={12} sm={6} md={4}>
-                <Skeleton variant="rectangular" sx={{ height: 400, borderRadius: '12px' }} />
-              </Grid>
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, index) => (
+              <Card
+                key={index}
+                className="rounded-2xl shadow-xl overflow-hidden"
+              >
+                <Skeleton variant="rectangular" height={208} />
+                <CardContent>
+                  <Skeleton width="60%" />
+                  <Skeleton width="90%" />
+                  <Skeleton width="40%" />
+                </CardContent>
+              </Card>
             ))}
-          </Grid>
+          </div>
         ) : (
-          <>
-            <Grid container spacing={4}>
-              {currentProducts.map((product) => (
-                <Grid item key={product._id} xs={12} sm={6} md={4}>
-                  <ProductCard key={product._id} product={product} />
-                </Grid>
-              ))}
-            </Grid>
-
-            {/* Paginación */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-              <Pagination
-                count={Math.ceil(filteredProducts.length / productsPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-                color="primary"
-                sx={{
-                  '& .MuiPaginationItem-root': {
-                    borderRadius: '50%',
-                    transition: 'background-color 0.3s',
-                  },
-                  '& .MuiPaginationItem-root:hover': {
-                    backgroundColor: theme.palette.primary.light,
-                  },
-                }}
-              />
-            </Box>
-          </>
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product._id}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+                className="rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800 cursor-pointer"
+                onClick={() => openModal(product)}
+              >
+                <Card className="!bg-transparent shadow-none">
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={`${apiConfig.imagesEndpoint.concat(
+                      "products/"
+                    )}${product.images[0]}`}
+                    alt={product.name}
+                    className="object-cover w-full h-52"
+                  />
+                  <CardContent className="space-y-2">
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      className="text-gray-900 dark:text-white font-semibold truncate"
+                    >
+                      {product.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      className="text-gray-600 dark:text-neutral-400 line-clamp-2"
+                    >
+                      {product.description}
+                    </Typography>
+                    <Box className="flex flex-wrap gap-1">
+                      {product.categories?.map((cat, idx) => (
+                        <Chip
+                          key={idx}
+                          label={cat.name}
+                          size="small"
+                          className="!text-sm !bg-neutral-200 dark:!bg-neutral-700 !text-black dark:!text-white"
+                        />
+                      ))}
+                    </Box>
+                    <Box className="flex items-center justify-between pt-2">
+                      <Typography
+                        variant="subtitle1"
+                        className="text-primary font-bold"
+                      >
+                        Q{product.price}
+                      </Typography>
+                      <Rating
+                        name="product-rating"
+                        value={product.rating || 0}
+                        precision={0.5}
+                        readOnly
+                        size="small"
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         )}
       </Box>
 
-      {/* Sidebar de Filtros en móvil */}
-      <Drawer
-        variant="temporary"
-        open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        sx={{
-          width: 300,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 300,
-            boxSizing: 'border-box',
-            borderRight: 'none',
-            boxShadow: 3,
-          },
-        }}
-      >
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Filtros
-          </Typography>
-          <TextField
-            fullWidth
-            label="Nombre"
-            name="name"
-            value={filters.name}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Precio Mínimo"
-            name="minPrice"
-            type="number"
-            value={filters.minPrice}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Precio Máximo"
-            name="maxPrice"
-            type="number"
-            value={filters.maxPrice}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Categoría"
-            name="category"
-            select
-            value={filters.category}
-            onChange={handleFilterChange}
-            sx={{ mb: 2 }}
-          >
-            <MenuItem value="">Todas</MenuItem>
-            {categories.map((cat, index) => (
-              <MenuItem key={index} value={cat}>
-                {cat}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Button
-            variant="contained"
-            onClick={applyFilters}
-            fullWidth
-            sx={{ mt: 2, backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.primary.dark }, borderRadius: '8px' }}
-          >
-            Aplicar Filtros
-          </Button>
-        </Box>
-      </Drawer>
+      {/* Modal de producto */}
+      <Dialog open={modalOpen} onClose={closeModal} maxWidth="sm" fullWidth>
+        {selectedProduct && (
+          <>
+            <DialogTitle>{selectedProduct.name}</DialogTitle>
+            <DialogContent dividers>
+              <Box mb={2}>
+                <img
+                  src={`${apiConfig.imagesEndpoint}products/${selectedProduct.images[0]}`}
+                  alt={selectedProduct.name}
+                  style={{
+                        maxWidth: "200px",
+                        maxHeight: "200px",
+                        objectFit: "cover",
+                        display: "block",
+                        margin: "0 auto 1rem",
+                        borderRadius: 8
+                    }}
+                />
+              </Box>
+              <Typography variant="body1" paragraph>
+                {selectedProduct.description}
+              </Typography>
+
+              <Typography variant="h6" gutterBottom>
+                Precio: Q{selectedProduct.price}
+              </Typography>
+              <Rating
+                name="product-rating"
+                value={selectedProduct.rating || 0}
+                precision={0.5}
+                readOnly
+                size="medium"
+              />
+
+              {/* Opciones */}
+              {selectedProduct.options?.map((option) => (
+                <FormControl
+                  key={option._id}
+                  fullWidth
+                  margin="normal"
+                  error={!!errors[option._id]}
+                  required={option.required}
+                >
+                  <InputLabel>{option.name}</InputLabel>
+                  <Select
+                    value={selectedOptions[option._id] || ""}
+                    onChange={(e) =>
+                      handleOptionChange(option._id, e.target.value)
+                    }
+                    label={option.name}
+                  >
+                    <MenuItem value="">
+                      <em>Seleccionar...</em>
+                    </MenuItem>
+                    {option.values.map((val) => (
+                      <MenuItem key={val} value={val}>
+                        {val}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {!!errors[option._id] && (
+                    <FormHelperText>{errors[option._id]}</FormHelperText>
+                  )}
+                </FormControl>
+              ))}
+
+              {/* Extras */}
+              {selectedProduct.extras?.length > 0 && (
+                <Box mt={2} mb={1}>
+                  <Typography variant="subtitle1">Extras:</Typography>
+                  {selectedProduct.extras.map((extra) => (
+                    <FormControlLabel
+                      key={extra._id}
+                      control={
+                        <Checkbox
+                          checked={selectedExtras.includes(extra.name)}
+                          onChange={() => handleExtraToggle(extra.name)}
+                        />
+                      }
+                      label={extra.name}
+                    />
+                  ))}
+                </Box>
+              )}
+
+              {/* Cantidad */}
+              <TextField
+                type="number"
+                label="Cantidad"
+                value={quantity}
+                onChange={(e) =>
+                  setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                inputProps={{ min: 1 }}
+                fullWidth
+                margin="normal"
+                error={!!errors.quantity}
+                helperText={errors.quantity}
+              />
+
+              {/* Notas */}
+              <TextField
+                label="Notas adicionales"
+                multiline
+                rows={3}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeModal}>Cancelar</Button>
+              <Button variant="contained" onClick={handleAddToCart}>
+                Agregar al carrito
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
     </Box>
   );
 };

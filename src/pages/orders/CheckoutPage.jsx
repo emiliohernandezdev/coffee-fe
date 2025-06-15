@@ -39,7 +39,8 @@ import {
 } from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
-import { v4 as uuidv4 } from "uuid"; // Generar UUID único para la orden
+import { v4 as uuidv4 } from "uuid";
+import * as Yup from 'yup';
 
 const steps = [
   { label: "Información de Recogida", icon: <Store /> },
@@ -59,7 +60,7 @@ const CheckoutPage = () => {
     email: user?.email || "",
     phone: user?.phone || "",
   });
-  const [orderId] = useState(uuidv4()); // Generar un UUID único para la orden
+  const [orderId] = useState(uuidv4());
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
@@ -78,7 +79,6 @@ const CheckoutPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Calcular el total del carrito
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const getStepContent = (step) => {

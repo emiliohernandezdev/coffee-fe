@@ -34,6 +34,7 @@ import Callback from './pages/users/SpotifyCallback';
 import FeedbackFloatingButton from './components/FeedbackButton';
 import ProductDetail from './pages/products/ProductDetail';
 import ScrollToTop from './components/ScrollToTop';
+import OrderButton from './components/OrderButton';
 
 
 const AppContent = () => {
@@ -78,7 +79,7 @@ const AppContent = () => {
               <Route path="/tracking" element={<TrackOrderPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/order-history" element={<OrderHistoryPage />} />
-              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/waiter" element={<WaiterView />} />
               <Route path="/callback" element={<Callback />} />
               <Route path="/product/:id" element={<ProductDetail />} />
@@ -87,6 +88,7 @@ const AppContent = () => {
         </div>
         <Footer />
         <FeedbackFloatingButton />
+        {/* <OrderButton /> */}
       </div>
     </ThemeProvider>
   );

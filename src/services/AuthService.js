@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import api from './ApiConfig';
 
 export const AuthService = {
@@ -23,10 +24,35 @@ export const AuthService = {
         return response.data;
     },
 
+    getPermissions: async() => {
+        const response = await api.get(`/auth/me/permissions`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('coffeeToken')}`
+            }
+        });
+        return response.data;
+    },
+
+
     forgotPassword: async(email) => {
         const response = await api.post(`/auth/forgot-password`, {
             email
         });
         return response.data;
+    },
+
+    redirect: async (role) => {
+        const navigate = useNavigate();
+
+        switch(role.name){
+            case "admin":
+                navigate("/admin/dashboard");
+                break;
+            case "user":
+                navigate("/");
+                break;
+            default:
+                navigate("/login");
+        }
     }
 };

@@ -47,11 +47,10 @@ const ProductDetailPage = () => {
         if (data.success) {
           setProduct(data.product);
         } else {
-          navigate("/"); // Redirigir al menú si el producto no existe
+          navigate("/");
         }
       } catch (error) {
-        console.error("Error fetching product:", error);
-        navigate("/"); // Redirigir al menú en caso de error
+        navigate("/");
       } finally {
         setLoading(false);
       }
@@ -74,20 +73,17 @@ const ProductDetailPage = () => {
   const handleAddToCart = () => {
     if (!product) return;
 
-    // Crear el objeto del producto con extras, opciones y notas
     const productWithExtrasAndOptions = {
       ...product,
-      _id: product._id, // Usar _id en lugar de id
+      _id: product._id,
       selectedExtras: selectedExtras,
       selectedOptions: selectedOptions,
       notes: notes,
-      quantity: 1, // Asignar una cantidad inicial de 1
+      quantity: 1,
     };
 
-    // Agregar el producto al carrito
     addToCart(productWithExtrasAndOptions);
 
-    // Redirigir al menú después de agregar al carrito
     navigate("/");
   };
 

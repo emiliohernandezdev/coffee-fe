@@ -26,7 +26,7 @@ const LoginPage = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     const [showPassword, setShowPassword] = useState(false);
-    const { login } = useContext(AuthContext);
+    const { login, redirect } = useContext(AuthContext);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     // Configuración de React Hook Form
@@ -48,7 +48,7 @@ const LoginPage = () => {
         try {
             const response = await AuthService.login(data.email, data.password);
             if (response.success) {
-                setSnackbarMessage("¡Inicio de sesión exitoso!");
+                setSnackbarMessage("Inicio de sesión exitoso");
                 setSnackbarSeverity("success");
                 setOpenSnackbar(true);
                 login(response.token);
@@ -59,6 +59,7 @@ const LoginPage = () => {
                 setOpenSnackbar(true);
             }
         } catch (error) {
+            console.log(error)
             setSnackbarMessage("Error al iniciar sesión");
             setSnackbarSeverity("error");
             setOpenSnackbar(true);
