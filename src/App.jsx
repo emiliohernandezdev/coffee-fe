@@ -87,7 +87,7 @@ const AppContent = () => {
           </Router>
         </div>
         <Footer />
-        <FeedbackFloatingButton />
+        {/* <FeedbackFloatingButton /> */}
         {/* <OrderButton /> */}
       </div>
     </ThemeProvider>

@@ -129,6 +129,7 @@ const LoginPage = () => {
                             label="Correo Electrónico"
                             type="email"
                             variant="outlined"
+                            autoComplete="email"
                             fullWidth
                             {...register("email")}
                             error={!!errors.email}

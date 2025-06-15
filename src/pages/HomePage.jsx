@@ -1,17 +1,20 @@
 import { useTheme } from '@mui/material/styles';
-import { Container, Typography, Grid, Button, Box, Card, CardContent, CardMedia, IconButton, Avatar } from '@mui/material';
+import { Container, Typography, Grid, Button, Box, Card, CardContent, CardMedia, Avatar, Paper, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
-import LocalCafeIcon from '@mui/icons-material/LocalCafe';
-import EventIcon from '@mui/icons-material/Event';
-import PeopleIcon from '@mui/icons-material/People';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
 import StarIcon from '@mui/icons-material/Star';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import { useRef } from 'react';
 
 const HomePage = () => {
   const theme = useTheme();
+  const isMd = useMediaQuery(theme.breakpoints.up('md'));
   const lightBackground = theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.default;
   const darkBackground = theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.background.paper;
 
+  // Productos destacados (sin Cold Brew)
   const featuredProducts = [
     {
       title: "Café Espresso",
@@ -22,11 +25,6 @@ const HomePage = () => {
       title: "Café Latte",
       description: "Cremoso y suave, el favorito para los amantes del café dulce.",
       image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Caffe_Latte_at_Pulse_Cafe.jpg/1200px-Caffe_Latte_at_Pulse_Cafe.jpg",
-    },
-    {
-      title: "Cold Brew",
-      description: "Refrescante y perfecto para los días calurosos.",
-      image: "https://ineffablecoffee.com/wp-content/uploads/2021/05/blog-ineffablecoffee-roasters-cafe-cold-brew-00.jpg",
     },
     {
       title: "Café Mocha",
@@ -71,72 +69,358 @@ const HomePage = () => {
     },
   ];
 
+  // Nueva sección: Ventajas/beneficios con emojis atractivos
+  const benefits = [
+    {
+      icon: <Box component="span" sx={{ fontSize: 40 }}>☕️</Box>,
+      title: "Café de Especialidad",
+      desc: "Granos premium, frescura y sabor en cada taza.",
+    },
+    {
+      icon: <Box component="span" sx={{ fontSize: 40 }}>🎓</Box>,
+      title: "Baristas Certificados",
+      desc: "Expertos apasionados por el arte del café.",
+    },
+    {
+      icon: <Box component="span" sx={{ fontSize: 40 }}>🏡</Box>,
+      title: "Ambiente Único",
+      desc: "Espacio acogedor para relajarte, trabajar o compartir.",
+    },
+    {
+      icon: <Box component="span" sx={{ fontSize: 40 }}>✨</Box>,
+      title: "Innovación Constante",
+      desc: "Nuevas recetas y experiencias cada temporada.",
+    },
+  ];
+
+  // Nueva sección: Experiencia Coffee Shop
+  const experience = [
+    {
+      emoji: "🌱",
+      title: "Sostenibilidad",
+      desc: "Comprometidos con el medio ambiente y el comercio justo.",
+    },
+    {
+      emoji: "🎶",
+      title: "Música y Cultura",
+      desc: "Eventos, playlists y arte local para inspirarte.",
+    },
+    {
+      emoji: "🍰",
+      title: "Repostería Artesanal",
+      desc: "Acompaña tu café con postres frescos y deliciosos.",
+    },
+    {
+      emoji: "📶",
+      title: "WiFi & Espacios Cómodos",
+      desc: "Perfecto para estudiar, trabajar o reunirte.",
+    },
+  ];
+
   return (
-    <div>
+    <Box
+      sx={{
+        bgcolor: lightBackground,
+        width: '100%',
+        minWidth: 0,
+        overflowX: 'clip',
+      }}
+    >
       {/* Hero Section */}
-      <section className="relative h-[500px] flex flex-col justify-center items-center text-white">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
+      <Box
+        sx={{
+          position: 'relative',
+          height: { xs: 320, md: 440 },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          mb: 0,
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
             backgroundImage: 'url("https://images3.alphacoders.com/870/870597.jpg")',
-            filter: 'blur(8px)',
-            zIndex: -1,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(10px) brightness(0.7)',
+            zIndex: 1,
           }}
         />
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground,
-            opacity: 0.4,
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: theme.palette.primary.main,
+            opacity: 0.3,
+            zIndex: 2,
           }}
-        ></div>
+        />
         <motion.div
-          className="z-10 text-center px-4 transition-all duration-500"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 1 }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 1 }}
+          style={{
+            position: 'relative',
+            zIndex: 3,
+            textAlign: 'center',
+            width: '100%',
+          }}
         >
-          <Typography variant="h3" className="text-5xl font-bold mb-4" style={{ color: theme.palette.text.primary }}>
-            Bienvenido a Coffee Shop
-          </Typography>
-          <Typography variant="h6" className="mb-8 text-lg max-w-3xl mx-auto" style={{ color: theme.palette.text.secondary }}>
-            El mejor café para tu día, directo a tu taza.
-          </Typography>
-          <br />
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            className="py-2 px-8 rounded-full shadow-lg transform transition duration-300 hover:scale-105"
-            style={{ backgroundColor: theme.palette.primary.main }}
-          >
-            Explora Nuestro Menú
-          </Button>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <Typography
+              variant="h1"
+              sx={{
+                fontWeight: 900,
+                mb: 0.5,
+                letterSpacing: 2,
+                fontSize: { xs: '2.1rem', sm: '2.7rem', md: '3.2rem' },
+                lineHeight: 1.1,
+                color: '#fff',
+                textShadow: `
+                  0 6px 32px rgba(0,0,0,0.85),
+                  0 1px 1px rgba(0,0,0,0.18)
+                `,
+                px: 2,
+                py: 0.5,
+                borderRadius: 3,
+                // background removed
+                display: 'inline-block',
+                fontFamily: `'Montserrat', 'Segoe UI', Arial, sans-serif`,
+                transition: 'color 0.3s, background 0.3s',
+              }}
+            >
+              ☕️ Coffee Shop
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                mb: 1.5,
+                maxWidth: 600,
+                mx: 'auto',
+                color: '#fff',
+                fontWeight: 500,
+                letterSpacing: 0.5,
+                fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.35rem' },
+                lineHeight: 1.4,
+                textShadow: `
+                  0 2px 12px rgba(0,0,0,0.45)
+                `,
+                // background removed
+                borderRadius: 2,
+                px: 2,
+                py: 0.5,
+                display: 'inline-block',
+                fontFamily: `'Montserrat', 'Segoe UI', Arial, sans-serif`,
+                transition: 'color 0.3s, background 0.3s',
+              }}
+            >
+              Bienvenido a tu espacio favorito para disfrutar el mejor café, ambiente y experiencias únicas.
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                px: 5,
+                py: 1.2,
+                borderRadius: 99,
+                boxShadow: 4,
+                fontWeight: 700,
+                fontSize: { xs: '1rem', md: '1.08rem' },
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                color: theme.palette.getContrastText(theme.palette.primary.main),
+                '&:hover': {
+                  background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+                  boxShadow: 8,
+                },
+              }}
+            >
+              Explora Nuestro Menú
+            </Button>
+          </Box>
         </motion.div>
-      </section>
+      </Box>
 
-      {/* Productos Destacados con Grid */}
-      <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
-        <Container>
-          <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
+      {/* Beneficios principales */}
+      <Box sx={{ py: { xs: 5, md: 7 }, bgcolor: lightBackground }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={3} justifyContent="center">
+            {benefits.map((benefit, idx) => (
+              <Grid item xs={12} sm={6} md={3} key={idx}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: idx * 0.1 }}
+                  style={{ width: '100%' }}
+                >
+                  <Paper
+                    elevation={6}
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: 4,
+                      bgcolor: theme.palette.background.paper,
+                      height: { xs: 180, sm: 180, md: 180 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                      width: '100%',
+                      maxWidth: '100%',
+                    }}
+                  >
+                    {benefit.icon}
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5, color: theme.palette.text.primary }}>
+                      {benefit.title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                      {benefit.desc}
+                    </Typography>
+                  </Paper>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Experiencia Coffee Shop */}
+      <Box sx={{ py: { xs: 5, md: 7 }, bgcolor: darkBackground }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontWeight: 700,
+              mb: { xs: 4, md: 6 },
+              color: theme.palette.primary.main,
+              letterSpacing: 1,
+              fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
+            }}
+          >
+            Vive la Experiencia Coffee Shop
+          </Typography>
+          <Grid container spacing={3} justifyContent="center">
+            {experience.map((exp, idx) => (
+              <Grid item xs={12} sm={6} md={3} key={idx}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: idx * 0.1 }}
+                  style={{ width: '100%' }}
+                >
+                  <Paper
+                    elevation={5}
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: 4,
+                      bgcolor: theme.palette.background.paper,
+                      height: { xs: 180, sm: 180, md: 180 }, // Igual que beneficios
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                      width: '100%',
+                      maxWidth: '100%',
+                      fontSize: 36,
+                    }}
+                  >
+                    <Box sx={{ fontSize: 48, mb: 1 }}>{exp.emoji}</Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5, color: theme.palette.text.primary }}>
+                      {exp.title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                      {exp.desc}
+                    </Typography>
+                  </Paper>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Productos Destacados */}
+      <Box sx={{ py: { xs: 5, md: 7 }, bgcolor: lightBackground }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontWeight: 700,
+              mb: { xs: 4, md: 6 },
+              color: theme.palette.secondary.main,
+              letterSpacing: 1,
+              fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
+            }}
+          >
             Productos Destacados
           </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            {featuredProducts.map((product, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <motion.div whileHover={{ scale: 1.05 }} className="transition duration-300 ease-in-out">
-                  <Card className="shadow-lg rounded-lg overflow-hidden">
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={product.image}
-                      alt={product.title}
-                    />
-                    <CardContent sx={{ paddingTop: "16px", textAlign: "center" }}>
-                      <Typography variant="h6" fontWeight="bold" style={{ color: theme.palette.text.primary }}>
-                        {product.title}
-                      </Typography>
-                      <Typography variant="body2" className="mt-2" style={{ color: theme.palette.text.secondary }}>
+          <Grid container spacing={3} justifyContent="center">
+            {featuredProducts.map((product, idx) => (
+              <Grid item xs={12} sm={6} md={4} key={idx}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: idx * 0.1 }}
+                  style={{ width: '100%' }}
+                >
+                  <Card
+                    sx={{
+                      height: { xs: 320, sm: 340, md: 340 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      boxShadow: 8,
+                      borderRadius: 4,
+                      bgcolor: theme.palette.background.paper,
+                      transition: 'box-shadow 0.3s',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      width: '100%',
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Box sx={{ position: 'relative', width: '100%', height: 170, overflow: 'hidden' }}>
+                      <CardMedia
+                        component="img"
+                        image={product.image}
+                        alt={product.title}
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          width: '100%',
+                          bgcolor: 'rgba(0,0,0,0.45)',
+                          color: '#fff',
+                          px: 2,
+                          py: 1,
+                        }}
+                      >
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: { xs: '1rem', md: '1.1rem' } }}>
+                          {product.title}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: 400, fontSize: { xs: '0.95rem', md: '1rem' } }}>
                         {product.description}
                       </Typography>
                     </CardContent>
@@ -146,88 +430,220 @@ const HomePage = () => {
             ))}
           </Grid>
         </Container>
-      </section>
+      </Box>
 
       {/* Sobre Nosotros */}
-      <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
-        <Container>
-          <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
-            Sobre Nosotros
-          </Typography>
-          <Grid container spacing={4} alignItems="center">
+      <Box
+        sx={{
+          py: { xs: 5, md: 7 },
+          bgcolor: darkBackground,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center" direction={isMd ? 'row' : 'column-reverse'}>
             <Grid item xs={12} md={6}>
-              <CardMedia
-                component="img"
-                height="400"
-                image="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-                alt="Sobre Nosotros"
-                className="rounded-lg shadow-lg"
-              />
+              <motion.div
+                initial={{ opacity: 0, x: -60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 1.5,
+                    color: theme.palette.primary.main,
+                    letterSpacing: 1,
+                    fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' },
+                  }}
+                >
+                  Sobre Nosotros
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: '0.98rem', md: '1.08rem' },
+                    color: theme.palette.text.secondary,
+                    mb: 1.5,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  En Coffee Shop, nos apasiona el café de calidad. Desde 2010, hemos estado sirviendo los mejores granos de café, tostados y preparados con cuidado para ofrecerte una experiencia única en cada taza.
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: '0.98rem', md: '1.08rem' },
+                    color: theme.palette.text.primary,
+                    fontWeight: 500,
+                  }}
+                >
+                  Nuestro equipo de baristas expertos está dedicado a brindarte el mejor servicio y a compartir contigo el amor por el café.
+                </Typography>
+              </motion.div>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" className="text-lg" style={{ color: theme.palette.text.secondary }}>
-                En Coffee Shop, nos apasiona el café de calidad. Desde 2010, hemos estado sirviendo los mejores granos de café, tostados y preparados con cuidado para ofrecerte una experiencia única en cada taza. Nuestro equipo de baristas expertos está dedicado a brindarte el mejor servicio y a compartir contigo el amor por el café.
-              </Typography>
+              <motion.div
+                initial={{ opacity: 0, x: 60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Box
+                  sx={{
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: 8,
+                    maxWidth: 380,
+                    mx: 'auto',
+                  }}
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                    alt="Sobre Nosotros"
+                    style={{ width: '100%', display: 'block', objectFit: 'cover', minHeight: 200 }}
+                  />
+                </Box>
+              </motion.div>
             </Grid>
           </Grid>
         </Container>
-      </section>
+      </Box>
 
       {/* Nuestro Equipo */}
-      <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
-        <Container>
-          <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
+      <Box sx={{ py: { xs: 5, md: 7 }, bgcolor: lightBackground }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontWeight: 700,
+              mb: { xs: 4, md: 6 },
+              color: theme.palette.secondary.main,
+              letterSpacing: 1,
+              fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
+            }}
+          >
             Nuestro Equipo
           </Typography>
           <Grid container spacing={4} justifyContent="center">
             {teamMembers.map((member, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <motion.div whileHover={{ scale: 1.05 }} className="transition duration-300 ease-in-out">
-                  <Card className="shadow-lg rounded-lg p-6 text-center">
+                <motion.div
+                  whileHover={{
+                    scale: 1.08,
+                    boxShadow: '0 12px 32px rgba(0,0,0,0.22)',
+                    rotateZ: 2,
+                  }}
+                  transition={{ type: 'spring', stiffness: 250 }}
+                  style={{ height: '100%' }}
+                >
+                  <Paper
+                    elevation={8}
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: '50%',
+                      boxShadow: 8,
+                      bgcolor: theme.palette.background.paper,
+                      height: 220,
+                      width: 220,
+                      mx: 'auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'box-shadow 0.3s',
+                      position: 'relative',
+                    }}
+                  >
                     <Avatar
                       src={member.image}
                       alt={member.name}
-                      sx={{ width: 120, height: 120, margin: '0 auto 16px' }}
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        mb: 1,
+                        boxShadow: 3,
+                        border: `3px solid ${theme.palette.primary.main}`,
+                        transition: 'transform 0.3s',
+                        '&:hover': { transform: 'scale(1.1)' },
+                      }}
                     />
-                    <Typography variant="h6" className="text-xl font-semibold mb-2" style={{ color: theme.palette.text.primary }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 0.5, fontSize: { xs: '1rem', md: '1.08rem' } }}>
                       {member.name}
                     </Typography>
-                    <Typography variant="body2" style={{ color: theme.palette.text.secondary }}>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: 500, fontSize: { xs: '0.95rem', md: '1rem' } }}>
                       {member.role}
                     </Typography>
-                  </Card>
+                  </Paper>
                 </motion.div>
               </Grid>
             ))}
           </Grid>
         </Container>
-      </section>
+      </Box>
 
       {/* Testimonios */}
-      <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
-        <Container>
-          <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
+      <Box sx={{ py: { xs: 5, md: 7 }, bgcolor: darkBackground }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontWeight: 700,
+              mb: { xs: 4, md: 6 },
+              color: theme.palette.primary.main,
+              letterSpacing: 1,
+              fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
+            }}
+          >
             Testimonios
           </Typography>
           <Grid container spacing={4} justifyContent="center">
             {testimonials.map((testimonial, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <motion.div whileHover={{ scale: 1.05 }} className="transition duration-300 ease-in-out">
-                  <Card className="shadow-lg rounded-lg p-6 text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 60 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: index * 0.1 }}
+                  style={{ height: '100%' }}
+                >
+                  <Card
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: 4,
+                      boxShadow: 6,
+                      bgcolor: theme.palette.background.paper,
+                      height: 220,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'box-shadow 0.3s',
+                    }}
+                  >
                     <Avatar
                       src={testimonial.image}
                       alt={testimonial.name}
-                      sx={{ width: 80, height: 80, margin: '0 auto 16px' }}
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        mb: 1,
+                        boxShadow: 2,
+                        border: `2px solid ${theme.palette.secondary.main}`,
+                      }}
                     />
-                    <Typography variant="h6" className="text-xl font-semibold mb-2" style={{ color: theme.palette.text.primary }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 0.5, fontSize: { xs: '1rem', md: '1.08rem' } }}>
                       {testimonial.name}
                     </Typography>
-                    <Typography variant="body2" style={{ color: theme.palette.text.secondary }}>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1, fontWeight: 500, fontSize: { xs: '0.95rem', md: '1rem' } }}>
                       {testimonial.comment}
                     </Typography>
-                    <Box className="mt-4">
+                    <Box>
                       {[...Array(5)].map((_, i) => (
-                        <StarIcon key={i} style={{ color: theme.palette.warning.main }} />
+                        <StarIcon key={i} sx={{ color: theme.palette.warning.main, fontSize: 18 }} />
                       ))}
                     </Box>
                   </Card>
@@ -236,38 +652,8 @@ const HomePage = () => {
             ))}
           </Grid>
         </Container>
-      </section>
-
-      {/* Contacto */}
-      <section className="py-16" style={{ backgroundColor: theme.palette.mode === 'dark' ? darkBackground : lightBackground }}>
-        <Container>
-          <Typography variant="h4" className="text-center text-3xl font-semibold mb-8" style={{ color: theme.palette.text.primary }}>
-            Contacto
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} md={6}>
-              <Card className="shadow-lg rounded-lg p-6 text-center">
-                <ContactMailIcon fontSize="large" style={{ color: theme.palette.primary.main }} />
-                <Typography variant="h6" className="text-xl font-semibold mb-2" style={{ color: theme.palette.text.primary }}>
-                  ¡Contáctanos!
-                </Typography>
-                <Typography variant="body2" style={{ color: theme.palette.text.secondary }}>
-                  Estamos aquí para responder tus preguntas y escuchar tus sugerencias.
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  className="mt-4"
-                >
-                  Enviar Mensaje
-                </Button>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-      </section>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
