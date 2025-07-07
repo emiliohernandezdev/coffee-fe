@@ -33,8 +33,7 @@ import { motion } from "framer-motion";
 import MenuIcon from "@mui/icons-material/Menu";
 import ProductsService from "../../services/ProductsService";
 import { apiConfig } from "../../services/ApiConfig";
-import { CartContext } from "../../context/CartContext";
-
+import { useCartStore } from "../../stores/CartStore";
 const MenuPage = () => {
   const { palette } = useTheme();
   const [products, setProducts] = useState([]);
@@ -42,7 +41,7 @@ const MenuPage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { addToCart } = useContext(CartContext);
+  const addToCart = useCartStore(state => state.addToCart);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);

@@ -24,7 +24,7 @@ import {
 import { ChevronLeft, ChevronRight, ShoppingCart } from "@mui/icons-material";
 import ProductsService from "../../services/ProductsService";
 import { apiConfig } from "../../services/ApiConfig";
-import { CartContext } from "../../context/CartContext";
+import { useCartStore } from "../../stores/CartStore";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -38,7 +38,7 @@ const ProductDetailPage = () => {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const { addToCart } = useContext(CartContext);
+  const addToCart = useCartStore(state => state.addToCart);
 
   useEffect(() => {
     const fetchProduct = async () => {

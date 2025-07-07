@@ -16,14 +16,19 @@ import {
   Container,
 } from "@mui/material";
 import { Delete, Add, Remove, ShoppingCart, Payment, DeleteForever, ArrowBack } from "@mui/icons-material";
-import { CartContext } from "../../context/CartContext";
 import { motion } from "framer-motion";
 import { apiConfig } from "../../services/ApiConfig";
 import { useNavigate } from "react-router-dom";
+import { useCartStore } from "../../stores/CartStore";
+import { useAuthStore } from "../../stores/AuthStore";
 
 const CartPage = () => {
   const theme = useTheme();
-  const { cart, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+  const cart = useCartStore(state => state.cart);
+  const addToCart = useCartStore(state => state.addToCart);
+  const clearCart = useCartStore(state => state.clearCart);
+  const removeFromCart = useCartStore(state => state.removeFromCart);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
   const navigate = useNavigate();
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);

@@ -29,25 +29,23 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import ContactMailIcon from "@mui/icons-material/ContactMail";
-import HistoryIcon from "@mui/icons-material/History";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialUISwitch } from "./CustomComponents";
 import { useTheme } from "@mui/material/styles";
-import { AuthContext } from "../context/AuthContext";
-import { CartContext } from "../context/CartContext";
-import MusicIcon from "@mui/icons-material/MusicNote";
+import HistoryIcon from "@mui/icons-material/History";
+import { useAuthStore } from "../stores/AuthStore";
+import { useCartStore } from "../stores/CartStore";
 
 function Appbar({ darkMode, handleThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [spotifyConnected, setSpotifyConnected] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useContext(AuthContext);
-  const { cart } = useContext(CartContext);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const logout = useAuthStore(state => state.logout);
 
+  const cart = useCartStore(state => state.cart);
   const theme = useTheme();
   const [localDarkMode, setLocalDarkMode] = useState(darkMode || false);
 

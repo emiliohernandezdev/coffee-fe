@@ -4,10 +4,10 @@ import MuiAlert from "@mui/material/Alert";
 import { Coffee } from "@mui/icons-material";
 import { AuthService } from '../services/AuthService';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { useAuthStore } from "../stores/AuthStore";
 
 const loginSchema = Yup.object().shape({
     email: Yup
@@ -26,7 +26,7 @@ const LoginPage = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
     const [showPassword, setShowPassword] = useState(false);
-    const { login, redirect } = useContext(AuthContext);
+    const login = useAuthStore(state => state.login);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     // Configuración de React Hook Form

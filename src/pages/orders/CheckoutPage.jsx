@@ -38,14 +38,14 @@ import {
   Add,
   Remove,
 } from "@mui/icons-material";
-import { AuthContext } from "../../context/AuthContext";
-import { CartContext } from "../../context/CartContext";
 import { v4 as uuidv4 } from "uuid";
 import { apiConfig } from "../../services/ApiConfig";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { OrderService } from "../../services/OrderService";
+import { useCartStore } from "../../stores/CartStore";
+import { useAuthStore } from "../../stores/AuthStore";
 
 const steps = [
   { label: "Recogida", icon: <Store /> },
@@ -62,8 +62,10 @@ const datosSchema = Yup.object().shape({
 
 const CheckoutPage = () => {
   const theme = useTheme();
-  const { user } = useContext(AuthContext);
-  const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+  const user = useAuthStore();
+  const cart = useCartStore(state => state.cart);
+  const removeFromCart = useCartStore(state => state.removeFromCart);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
   const [activeStep, setActiveStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [pickupMethod, setPickupMethod] = useState("local");

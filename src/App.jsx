@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Footer from './components/Footer';
 import ProductsPage from './pages/ProductsPage';
-import { usePersistedTheme } from './hooks/ThemeHook';
 import LoginPage from './pages/LoginPage';
 import Appbar from './components/AppBar';
 import ForgotPasswordPage from './pages/ForgotPwd';
@@ -18,8 +17,6 @@ import AddCategoryPage from './pages/categories/CreateCategory';
 import { LoaderContext, LoaderProvider } from './context/LoaderContext';
 import Loader from './components/Loader';
 import { setupInterceptors } from './services/ApiConfig';
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
 import OrderProducts from './pages/orders/OrderProducts';
 import OrderSummary from './pages/orders/OrderSummary';
 import MenuPage from './pages/products/MenuPage';
@@ -31,10 +28,9 @@ import OrderHistoryPage from './pages/orders/OrderHistory';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WaiterView from './pages/waiter/WaiterOrders';
 import Callback from './pages/users/SpotifyCallback';
-import FeedbackFloatingButton from './components/FeedbackButton';
 import ProductDetail from './pages/products/ProductDetail';
 import ScrollToTop from './components/ScrollToTop';
-import OrderButton from './components/OrderButton';
+import { useThemeStore } from './stores/ThemeStore';
 
 
 const AppContent = () => {
@@ -44,10 +40,12 @@ const AppContent = () => {
     setupInterceptors(setLoading);
   }, [setLoading]);
 
-  const [darkMode, setDarkMode] = usePersistedTheme();
+  const darkMode = useThemeStore(state => state.darkMode);
+  const setDarkMode = useThemeStore(state => state.setDarkMode);
+  const toggleDarkMode = useThemeStore(state => state.toggleDarkMode);
 
   const handleThemeChange = () => {
-    setDarkMode(!darkMode);
+    toggleDarkMode();
   };
 
   return (
@@ -97,13 +95,9 @@ const AppContent = () => {
 function App() {
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <LoaderProvider>
-          <AppContent />
-        </LoaderProvider>
-      </CartProvider>
-    </AuthProvider>
+    <LoaderProvider>
+      <AppContent />
+    </LoaderProvider>
   );
 }
 
