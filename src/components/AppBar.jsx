@@ -110,30 +110,67 @@ function Appbar({ darkMode, handleThemeChange }) {
           </ListItem>
         ))}
         <ListItem disablePadding>
-          {isAuthenticated ? (
-            <Button
-              color="inherit"
-              onClick={handleLogoutClick}
-              fullWidth
-              startIcon={<LogoutIcon />}
-            >
-              Cerrar sesión
-            </Button>
-          ) : (
-            <Button
-              color="inherit"
-              onClick={handleLoginClick}
-              fullWidth
-              startIcon={<LoginIcon />}
-            >
-              Iniciar sesión
-            </Button>
-          )}
+          <ListItemButton onClick={handleCartClick}>
+            <ListItemIcon>
+              <Badge badgeContent={cart.length} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </ListItemIcon>
+            <ListItemText primary="Carrito" />
+          </ListItemButton>
         </ListItem>
+        {isAuthenticated ? (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => { navigate("/profile"); }}>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="Mi perfil" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => { navigate("/order-history"); }}>
+                <ListItemIcon>
+                  <HistoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Historial de pedidos" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => { navigate("/settings"); }}>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Configuración" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLogoutClick}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Cerrar sesión" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        ) : (
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLoginClick}>
+              <ListItemIcon>
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText primary="Iniciar sesión" />
+            </ListItemButton>
+          </ListItem>
+        )}
         <ListItem disablePadding>
-          <IconButton color="inherit" onClick={handleDialogOpen}>
-            <SettingsIcon />
-          </IconButton>
+          <ListItemButton onClick={handleDialogOpen}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Configuración" />
+          </ListItemButton>
         </ListItem>
       </List>
     </Box>
@@ -158,7 +195,8 @@ function Appbar({ darkMode, handleThemeChange }) {
             sx={{
               flexGrow: 1,
               cursor: "pointer",
-              fontFamily: "'Lobster', cursive",
+              // fontFamily: "'Lobster', cursive",
+              color: theme.palette.primary.light,
               letterSpacing: 1,
             }}
             onClick={() => navigate("/")}

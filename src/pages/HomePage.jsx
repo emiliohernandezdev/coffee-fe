@@ -2,11 +2,6 @@ import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Button, Box, Card, CardContent, CardMedia, Avatar, Paper, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import StarIcon from '@mui/icons-material/Star';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import LocalCafeIcon from '@mui/icons-material/LocalCafe';
-import Diversity3Icon from '@mui/icons-material/Diversity3';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import { useRef } from 'react';
 
 const HomePage = () => {
   const theme = useTheme();
@@ -356,7 +351,7 @@ const HomePage = () => {
             sx={{
               fontWeight: 700,
               mb: { xs: 4, md: 6 },
-              color: theme.palette.secondary.main,
+              // color: theme.palette.secondary.main,
               letterSpacing: 1,
               fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
             }}
@@ -414,7 +409,7 @@ const HomePage = () => {
                           py: 1,
                         }}
                       >
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: { xs: '1rem', md: '1.1rem' } }}>
+                        <Typography variant="subtitle1" sx={{ color: theme.palette.text.secondary, fontWeight: 700, fontSize: { xs: '1rem', md: '1.1rem' } }}>
                           {product.title}
                         </Typography>
                       </Box>
@@ -518,7 +513,7 @@ const HomePage = () => {
             sx={{
               fontWeight: 700,
               mb: { xs: 4, md: 6 },
-              color: theme.palette.secondary.main,
+              // color: theme.palette.secondary.main,
               letterSpacing: 1,
               fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' },
             }}
