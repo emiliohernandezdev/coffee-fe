@@ -14,6 +14,7 @@ import {
 import MuiAlert from "@mui/material/Alert";
 import { Coffee } from "@mui/icons-material";
 import Loader from "../components/Loader";
+import {AuthService} from "../services/AuthService";
 
 const ForgotPasswordPage = () => {
   const theme = useTheme();
@@ -29,6 +30,7 @@ const ForgotPasswordPage = () => {
     setLoading(true);
     try {
       // Simulación de servicio
+      await AuthService.forgotPassword(email);
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSnackbarMessage("Te hemos enviado un enlace para restablecer tu contraseña");
       setSnackbarSeverity("success");

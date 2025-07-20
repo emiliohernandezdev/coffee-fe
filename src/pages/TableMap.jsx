@@ -162,7 +162,6 @@ const TablePage = () => {
                     left: `${table.x * 120}px`,
                     top: `${table.y * 120}px`,
                 }}
-                onClick={() => handleEditTable(table)}
             >
                 <Typography variant="h6"># {table.number}</Typography>
                 <Typography variant="body2">Cap: {table.capacity}</Typography>
