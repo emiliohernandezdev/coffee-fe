@@ -12,7 +12,6 @@ const TablesService = {
     },
 
     updateTable: async (id, updates) => {
-
         var body = {...updates, id: id};
         const response = await api.put(`/tables/update`, body);
         return response.data["result"];

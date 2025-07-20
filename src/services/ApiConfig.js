@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export const apiConfig = {
-    baseURL: 'http://MILOPC:4000/api/v1/',
-    socketUrl: 'http://MILOPC:4000',
-    imagesEndpoint: 'http://MILOPC:4000/',
+    baseURL: `http://${window.location.hostname}:4000/api/v1/`,
+    socketUrl: `http://${window.location.hostname}:4000`,
+    imagesEndpoint: `http://${window.location.hostname}:4000/`,
 };
 
 const api = axios.create({
