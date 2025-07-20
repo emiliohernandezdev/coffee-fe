@@ -15,6 +15,10 @@ export const AuthService = {
         return response.data;
     },
 
+    authenticateToken: async(token) => {
+        localStorage.setItem('coffeeToken', token)
+    },
+
     getProfile: async() => {
         const response = await api.get(`/auth/me`, {
             headers: {

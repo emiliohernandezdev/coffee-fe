@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export const apiConfig = {
-    baseURL: 'http://DESKTOP-DUHQTTU:4000/api/v1/',
-    socketUrl: 'http://DESKTOP-DUHQTTU:4000',
-    imagesEndpoint: 'http://DESKTOP-DUHQTTU:4000/',
+    baseURL: 'http://MILOPC:4000/api/v1/',
+    socketUrl: 'http://MILOPC:4000',
+    imagesEndpoint: 'http://MILOPC:4000/',
 };
 
 const api = axios.create({
@@ -23,7 +23,6 @@ export const setupInterceptors = (setLoading) => {
         setLoading(false);
         return response;
     }, (error) => {
-        console.log(error)
         setLoading(false);
         const message = error?.response?.data?.message || 'Ocurrió un error inesperado.';
         const status = error?.response?.status || 500;

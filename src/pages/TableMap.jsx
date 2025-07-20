@@ -25,14 +25,14 @@ const TablePage = () => {
             }
         };
 
-        const fetchClients = async () => {
-            // Assume there's a service to fetch clients
-            const data = await TablesService.getAllClients();
-            setClients(data);
-        };
+        // const fetchClients = async () => {
+        //     // Assume there's a service to fetch clients
+        //     const data = await TablesService.getAllClients();
+        //     setClients(data);
+        // };
 
         fetchTables();
-        fetchClients();
+        // fetchClients();
 
         socket.on('tableAdded', (table) => {
             setTables(prevTables => [...prevTables, table]);

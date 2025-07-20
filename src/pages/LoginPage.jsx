@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { 
-  Button, 
-  TextField, 
-  Typography, 
-  Box, 
-  useTheme, 
-  Paper, 
-  useMediaQuery, 
-  Snackbar, 
-  Link, 
-  InputAdornment, 
+import {
+  Button,
+  TextField,
+  Typography,
+  Box,
+  useTheme,
+  Paper,
+  useMediaQuery,
+  Snackbar,
+  Link,
+  InputAdornment,
   IconButton,
   Fade
 } from "@mui/material";
@@ -19,6 +19,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { AuthService } from "../services/AuthService";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/AuthStore";
 
 const loginSchema = Yup.object().shape({
   email: Yup
@@ -38,6 +41,8 @@ const LoginPage = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [showPassword, setShowPassword] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
+  const authStore = useAuthStore();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(loginSchema),
@@ -46,10 +51,24 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Lógica de autenticación aquí
-      setSnackbarMessage("Inicio de sesión exitoso");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
+      await AuthService.login(data.email, data.password)
+        .then((auth) => {
+          if (auth.success == true) {
+            setSnackbarMessage("Inicio de sesión exitoso");
+            setSnackbarSeverity("success");
+            setOpenSnackbar(true);
+            authStore.login(auth.token);
+            navigate("/profile")
+          } else {
+            setSnackbarMessage(auth.message);
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
     } catch (error) {
       setSnackbarMessage("Error al iniciar sesión");
       setSnackbarSeverity("error");
@@ -104,26 +123,26 @@ const LoginPage = () => {
           }}
         >
           <Box sx={{ textAlign: "center", mb: 4 }}>
-            <Coffee 
-              sx={{ 
-                fontSize: 48, 
+            <Coffee
+              sx={{
+                fontSize: 48,
                 color: theme.palette.primary.main,
                 mb: 1
-              }} 
+              }}
             />
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                fontWeight: 700, 
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
                 color: theme.palette.text.primary,
                 mb: 1
               }}
             >
               ¡Bienvenido de nuevo!
             </Typography>
-            <Typography 
-              variant="body1" 
-              sx={{ 
+            <Typography
+              variant="body1"
+              sx={{
                 color: theme.palette.text.secondary,
                 mb: 3
               }}
@@ -209,15 +228,15 @@ const LoginPage = () => {
               {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Button>
 
-            <Box sx={{ 
-              display: "flex", 
+            <Box sx={{
+              display: "flex",
               justifyContent: "space-between",
               mt: 2
             }}>
-              <Link 
-                href="/recover" 
-                variant="body2" 
-                sx={{ 
+              <Link
+                href="/recover"
+                variant="body2"
+                sx={{
                   textDecoration: "none",
                   color: theme.palette.primary.main,
                   '&:hover': {
@@ -227,10 +246,10 @@ const LoginPage = () => {
               >
                 ¿Olvidaste tu contraseña?
               </Link>
-              <Link 
-                href="/signup" 
-                variant="body2" 
-                sx={{ 
+              <Link
+                href="/signup"
+                variant="body2"
+                sx={{
                   textDecoration: "none",
                   color: theme.palette.primary.main,
                   '&:hover': {
@@ -252,9 +271,9 @@ const LoginPage = () => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         TransitionComponent={Fade}
       >
-        <MuiAlert 
-          elevation={6} 
-          variant="filled" 
+        <MuiAlert
+          elevation={6}
+          variant="filled"
           severity={snackbarSeverity}
           sx={{ width: '100%' }}
         >
