@@ -1,66 +1,60 @@
-import { createTheme } from '@mui/material/styles';
-
-// Colores base que se transformarán para dark/light
-const baseColors = {
-  primary: '#6D4C41', // Café oscuro principal
-  secondary: '#D7CCC8', // Beige claro
-  error: '#D32F2F', // Rojo
-  background: '#FFF8F0', // Crema muy clara
-  textPrimary: '#3E2723', // Café casi negro
-  textSecondary: '#5D4037', // Café oscuro
-  paper: '#FFFFFF' // Blanco
-};
+import { createTheme } from "@mui/material";
 
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: baseColors.primary,
-      contrastText: '#FFFFFF',
+      main: '#6D4C41', // Café oscuro
+      contrastText: '#FFFFFF', // Texto blanco
     },
     secondary: {
-      main: baseColors.secondary,
+      main: '#D7CCC8', // Beige claro
     },
     background: {
-      default: baseColors.background,
-      paper: baseColors.paper,
+      default: '#FFF8F0', // Fondo crema claro
+      paper: '#FFFFFF',   // Superficies blancas
     },
     text: {
-      primary: baseColors.textPrimary,
-      secondary: baseColors.textSecondary,
+      primary: '#3E2723',  // Texto café oscuro
+      secondary: '#5D4037', // Texto café medio
     },
-    error: {
-      main: baseColors.error,
+    action: {
+      active: '#5D4037',   // Color para elementos activos
+      hover: '#D7CCC8',    // Color hover
     },
-    divider: '#E0E0E0', // Gris muy claro
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    allVariants: {
-      color: baseColors.textPrimary, // Todos los textos usan este color por defecto
-    },
+    divider: '#D7CCC8',    // Divisores beige
   },
   components: {
-    MuiButton: {
+    // ESTILOS PARA INPUTS (LIGHT)
+    MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: '8px',
-          padding: '8px 16px',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(93, 64, 55, 0.5)', // Borde café semi-transparente
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme => theme.palette.primary.main, // Café oscuro al hover
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme => theme.palette.primary.main, // Café oscuro al focus
+          },
         },
       },
     },
-    MuiAppBar: {
+    MuiInputLabel: {
       styleOverrides: {
         root: {
-          backgroundColor: baseColors.primary,
-          color: '#FFFFFF',
+          color: theme => theme.palette.text.secondary, // Café medio
+          '&.Mui-focused': {
+            color: theme => theme.palette.primary.main, // Café oscuro al focus
+          },
         },
       },
     },
-    MuiCard: {
+    MuiFormHelperText: {
       styleOverrides: {
         root: {
-          backgroundColor: baseColors.paper,
+          color: theme => theme.palette.text.secondary, // Café medio
         },
       },
     },
@@ -71,52 +65,57 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#D7CCC8', // El secondary light ahora es primary
-      contrastText: baseColors.textPrimary,
+      main: '#D7CCC8', // Beige claro
+      contrastText: '#3E2723', // Texto café oscuro
     },
     secondary: {
-      main: baseColors.primary, // El primary light ahora es secondary
+      main: '#8D6E63', // Café medio
     },
     background: {
-      default: '#1A120B', // Café muy oscuro
-      paper: '#2A211C', // Café oscuro
+      default: '#1A120B', // Fondo café muy oscuro
+      paper: '#2A211C',   // Superficies café oscuro
     },
     text: {
-      primary: '#EFEBE9', // Beige claro
-      secondary: '#D7CCC8', // Beige
+      primary: '#EFEBE9',  // Texto beige claro
+      secondary: '#D7CCC8', // Texto beige
     },
-    error: {
-      main: '#FF6E6E', // Rojo claro
+    action: {
+      active: '#D7CCC8',   // Color para elementos activos
+      hover: '#5D4037',    // Color hover
     },
-    divider: '#5D4037', // Café para dividers
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    allVariants: {
-      color: '#EFEBE9', // Todos los textos claros en dark
-    },
+    divider: '#5D4037',    // Divisores café
   },
   components: {
-    MuiButton: {
+    // ESTILOS PARA INPUTS (DARK) - Igual estructura que light
+    MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: '8px',
-          padding: '8px 16px',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(215, 204, 200, 0.5)', // Borde beige semi-transparente
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme => theme.palette.primary.main, // Beige claro al hover
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme => theme.palette.primary.main, // Beige claro al focus
+          },
         },
       },
     },
-    MuiAppBar: {
+    MuiInputLabel: {
       styleOverrides: {
         root: {
-          backgroundColor: '#2A211C',
-          color: '#D7CCC8',
+          color: theme => theme.palette.text.secondary, // Beige
+          '&.Mui-focused': {
+            color: theme => theme.palette.primary.main, // Beige claro al focus
+          },
         },
       },
     },
-    MuiCard: {
+    MuiFormHelperText: {
       styleOverrides: {
         root: {
-          backgroundColor: '#2A211C',
+          color: theme => theme.palette.text.secondary, // Beige
         },
       },
     },

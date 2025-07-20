@@ -409,7 +409,7 @@ const HomePage = () => {
                           py: 1,
                         }}
                       >
-                        <Typography variant="subtitle1" sx={{ color: theme.palette.text.secondary, fontWeight: 700, fontSize: { xs: '1rem', md: '1.1rem' } }}>
+                        <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 700, fontSize: { xs: '1rem', md: '1.1rem' } }}>
                           {product.title}
                         </Typography>
                       </Box>

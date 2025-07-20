@@ -41,7 +41,6 @@ const AppContent = () => {
   }, [setLoading]);
 
   const darkMode = useThemeStore(state => state.darkMode);
-  const setDarkMode = useThemeStore(state => state.setDarkMode);
   const toggleDarkMode = useThemeStore(state => state.toggleDarkMode);
 
   const handleThemeChange = () => {
@@ -85,8 +84,6 @@ const AppContent = () => {
           </Router>
         </div>
         <Footer />
-        {/* <FeedbackFloatingButton /> */}
-        {/* <OrderButton /> */}
       </div>
     </ThemeProvider>
   );

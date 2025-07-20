@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Grid,
   Typography,
-  Card,
-  CardContent,
   IconButton,
   TextField,
   Button,
@@ -11,446 +9,368 @@ import {
   Divider,
   Box,
   CardMedia,
-  Chip,
   Paper,
   Container,
+  Stack,
+  Badge,
+  Chip
 } from "@mui/material";
-import { Delete, Add, Remove, ShoppingCart, Payment, DeleteForever, ArrowBack } from "@mui/icons-material";
+import { 
+  DeleteForever, 
+  Add, 
+  Remove, 
+  ShoppingCart, 
+  Payment, 
+  ArrowBack,
+  Close,
+  EmojiFoodBeverage
+} from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { apiConfig } from "../../services/ApiConfig";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../../stores/CartStore";
-import { useAuthStore } from "../../stores/AuthStore";
 
 const CartPage = () => {
   const theme = useTheme();
   const cart = useCartStore(state => state.cart);
-  const addToCart = useCartStore(state => state.addToCart);
   const clearCart = useCartStore(state => state.clearCart);
   const removeFromCart = useCartStore(state => state.removeFromCart);
   const updateQuantity = useCartStore(state => state.updateQuantity);
   const navigate = useNavigate();
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
 
-  const truncateDescription = (text, maxLength) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  const handleQuantityChange = (cartItemId, newQuantity) => {
+    const qty = Math.max(1, newQuantity);
+    updateQuantity(cartItemId, qty);
   };
 
   return (
     <Box
       sx={{
-        bgcolor: theme.palette.background.default,
-        minHeight: "100vh",
-        py: { xs: 4, md: 8 },
-        px: { xs: 1, md: 0 },
-        width: "100%",
+        bgcolor: 'background.default',
+        minHeight: '100vh',
+        py: { xs: 3, md: 6 },
+        px: { xs: 2, md: 0 }
       }}
-      className="cart-bg"
     >
       <Container maxWidth="lg">
-        <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 2 }}>
+        {/* Encabezado */}
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
           <IconButton
-            onClick={() => navigate("/products")}
+            onClick={() => navigate(-1)}
             sx={{
-              color: theme.palette.primary.main,
-              background: theme.palette.action.hover,
-              "&:hover": { background: theme.palette.action.selected },
+              color: 'primary.main',
+              bgcolor: 'action.hover',
+              '&:hover': { bgcolor: 'action.selected' }
             }}
-            aria-label="Volver a productos"
           >
             <ArrowBack />
           </IconButton>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 900,
-              color: theme.palette.primary.main,
-              letterSpacing: 1,
-              fontSize: { xs: "1.5rem", md: "2.2rem" },
-            }}
-          >
-            <ShoppingCart sx={{ mr: 1, fontSize: "2rem" }} />
-            Tu Carrito
-          </Typography>
-        </Box>
+          
+          <Badge badgeContent={cart.length} color="primary" showZero>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: 'primary.main',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              <ShoppingCart fontSize="large" />
+              Mi Carrito
+            </Typography>
+          </Badge>
+        </Stack>
 
         {cart.length === 0 ? (
           <Paper
-            elevation={6}
+            elevation={0}
             sx={{
-              p: { xs: 4, md: 8 },
-              textAlign: "center",
+              p: 6,
+              textAlign: 'center',
               borderRadius: 4,
-              bgcolor: theme.palette.background.paper,
-              mt: 8,
+              bgcolor: 'background.paper',
+              border: `1px dashed ${theme.palette.divider}`,
+              mt: 4
             }}
           >
-            <Typography
-              variant="h5"
-              sx={{
+            <EmojiFoodBeverage 
+              sx={{ 
+                fontSize: 80, 
+                color: 'text.disabled',
+                mb: 3 
+              }} 
+            />
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 600,
                 mb: 2,
-                color: theme.palette.text.secondary,
-                fontWeight: 700,
-                letterSpacing: 1,
+                color: 'text.primary'
               }}
             >
-              🛒 ¡Tu carrito está vacío!
+              Tu carrito está vacío
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4, color: theme.palette.text.secondary }}>
-              Descubre nuestros productos y agrega tus favoritos.
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                mb: 4,
+                color: 'text.secondary',
+                maxWidth: 400,
+                mx: 'auto'
+              }}
+            >
+              Explora nuestro menú y descubre deliciosas opciones para agregar a tu pedido
             </Typography>
             <Button
               variant="contained"
-              startIcon={<ShoppingCart />}
-              onClick={() => navigate("/products")}
+              size="large"
+              onClick={() => navigate('/menu')}
+              startIcon={<Add />}
               sx={{
                 px: 4,
-                py: 1.2,
-                borderRadius: 99,
-                fontWeight: 700,
-                fontSize: "1.1rem",
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                color: theme.palette.getContrastText(theme.palette.primary.main),
-                boxShadow: 4,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
-                  boxShadow: 8,
-                },
+                py: 1.5,
+                borderRadius: 2,
+                fontWeight: 600
               }}
             >
-              Explorar Productos
+              Ver Menú
             </Button>
           </Paper>
         ) : (
-          <Grid container spacing={4}>
+          <Grid container spacing={3}>
             {/* Lista de Productos */}
             <Grid item xs={12} md={8}>
               <Paper
-                elevation={6}
+                elevation={2}
                 sx={{
-                  p: { xs: 2, md: 4 },
-                  borderRadius: 4,
-                  bgcolor: theme.palette.background.paper,
-                  mb: 4,
+                  p: 3,
+                  borderRadius: 3,
+                  bgcolor: 'background.paper'
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 700,
-                    mb: 3,
-                    color: theme.palette.mode === "dark"
-                      ? theme.palette.primary.light
-                      : theme.palette.secondary.main,
-                    letterSpacing: 1,
-                  }}
-                >
-                  Productos en tu carrito
-                </Typography>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+                  <Typography variant="h6" fontWeight={600}>
+                    Productos ({cart.length})
+                  </Typography>
+                  <Button
+                    onClick={clearCart}
+                    startIcon={<DeleteForever />}
+                    sx={{ color: 'error.main' }}
+                  >
+                    Vaciar todo
+                  </Button>
+                </Stack>
+                
                 <Divider sx={{ mb: 3 }} />
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+
+                <Stack spacing={3}>
                   {cart.map((item) => (
                     <motion.div
-                      key={item._id}
+                      key={item.cartItemId}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <Paper
-                        elevation={4}
+                        elevation={0}
                         sx={{
-                          borderRadius: 3,
-                          boxShadow: 3,
-                          background: theme.palette.background.paper,
-                          display: "flex",
-                          flexDirection: { xs: "column", sm: "row" },
-                          alignItems: "center",
-                          p: { xs: 2, sm: 3 },
+                          p: 2,
+                          borderRadius: 2,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          display: 'flex',
                           gap: 2,
-                          border: `1.5px solid ${theme.palette.divider}`,
-                          transition: "box-shadow 0.3s",
+                          position: 'relative'
                         }}
                       >
-                        {/* Imagen */}
+                        {/* Imagen del producto */}
                         <Box
                           sx={{
-                            flex: "0 0 110px",
-                            width: 110,
-                            height: 110,
+                            width: 100,
+                            height: 100,
                             borderRadius: 2,
-                            overflow: "hidden",
-                            mr: { sm: 2, xs: 0 },
-                            boxShadow: 2,
-                            bgcolor: theme.palette.background.default,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            overflow: 'hidden',
+                            flexShrink: 0,
+                            bgcolor: 'background.default'
                           }}
                         >
-                          <CardMedia
-                            component="img"
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                              borderRadius: 2,
-                              border: `2px solid ${theme.palette.primary.main}`,
-                            }}
-                            image={`${apiConfig.imagesEndpoint.concat("products/")}${item.images[0]}`}
-                            alt={item.name}
-                          />
+                          {item.images?.[0] && (
+                            <CardMedia
+                              component="img"
+                              sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              image={`${apiConfig.imagesEndpoint}products/${item.images[0]}`}
+                              alt={item.name}
+                            />
+                          )}
                         </Box>
-                        {/* Info */}
-                        <Box sx={{ flex: 1, minWidth: 0, px: { xs: 0, sm: 1 } }}>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: 800,
-                              color: theme.palette.text.primary,
-                              mb: 0.5,
-                              fontSize: { xs: "1.1rem", sm: "1.15rem" },
-                            }}
-                          >
+
+                        {/* Detalles del producto */}
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography variant="subtitle1" fontWeight={600} noWrap>
                             {item.name}
                           </Typography>
-                          {/* Extras y Opciones */}
-                          {item.extras && item.extras.length > 0 && (
-                            <Box sx={{ mt: 0.5 }}>
-                              <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                                Extras:
-                              </Typography>
-                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                {item.extras.map((extra) => (
-                                  <Chip
-                                    key={extra._id}
-                                    label={extra.name}
-                                    size="small"
-                                    sx={{
-                                      bgcolor: "transparent",
-                                      color: theme.palette.text.primary,
-                                      fontWeight: 600,
-                                      border: `1px solid ${theme.palette.divider}`,
-                                    }}
-                                  />
-                                ))}
-                              </Box>
+                          
+                          {/* Opciones seleccionadas */}
+                          {item.selectedOptions?.length > 0 && (
+                            <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {item.selectedOptions.map((option, idx) => (
+                                <Chip
+                                  key={idx}
+                                  label={`${option.name}: ${option.values}`}
+                                  size="small"
+                                  sx={{ 
+                                    bgcolor: 'primary.light', 
+                                    color: 'primary.contrastText',
+                                    fontSize: '0.75rem'
+                                  }}
+                                />
+                              ))}
                             </Box>
                           )}
-                          {item.options && item.options.length > 0 && (
-                            <Box sx={{ mt: 0.5 }}>
-                              <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                                Opciones:
-                              </Typography>
-                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                {item.options.map((option) => (
-                                  <Chip
-                                    key={option._id}
-                                    label={option.name}
-                                    size="small"
-                                    sx={{
-                                      bgcolor: "transparent",
-                                      color: theme.palette.text.primary,
-                                      fontWeight: 600,
-                                      border: `1px solid ${theme.palette.divider}`,
-                                    }}
-                                  />
-                                ))}
-                              </Box>
-                            </Box>
-                          )}
+                          
+                          {/* Descripción (opcional) */}
+                          <Typography variant="body2" color="text.secondary" mt={1}>
+                            {item.description.substring(0, 60)}...
+                          </Typography>
+                          
+                          {/* Precio unitario */}
+                          <Typography variant="body2" color="text.secondary" mt={1}>
+                            Q{item.price.toFixed(2)} c/u
+                          </Typography>
                         </Box>
-                        {/* Cantidad y Precio */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            gap: 1,
-                            minWidth: 90,
-                            mt: { xs: 2, sm: 0 },
-                          }}
+
+                        {/* Controles de cantidad y precio */}
+                        <Stack 
+                          spacing={1} 
+                          alignItems="flex-end" 
+                          justifyContent="space-between"
                         >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                              borderRadius: 2,
-                              px: 0,
-                              py: 0,
-                              bgcolor: "transparent", // Sin fondo
-                            }}
+                          <IconButton
+                            onClick={() => removeFromCart(item.cartItemId)}
+                            size="small"
+                            sx={{ color: 'error.main' }}
                           >
+                            <Close fontSize="small" />
+                          </IconButton>
+                          
+                          <Stack direction="row" alignItems="center" spacing={1}>
                             <IconButton
-                              onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                              onClick={() => handleQuantityChange(item.cartItemId, item.quantity - 1)}
                               size="small"
-                              aria-label="Reducir cantidad"
                               disabled={item.quantity <= 1}
-                              sx={{
-                                color: theme.palette.primary.main,
-                                bgcolor: "transparent",
-                                "&:hover": { bgcolor: theme.palette.action.hover },
-                              }}
                             >
-                              <Remove />
+                              <Remove fontSize="small" />
                             </IconButton>
+                            
                             <TextField
                               value={item.quantity}
                               onChange={(e) => {
-                                const newQuantity = parseInt(e.target.value);
-                                if (!isNaN(newQuantity) && newQuantity >= 1) {
-                                  updateQuantity(item._id, newQuantity);
+                                const newQty = parseInt(e.target.value);
+                                if (!isNaN(newQty)) {
+                                  handleQuantityChange(item.cartItemId, newQty);
                                 }
                               }}
                               type="number"
-                              inputProps={{
-                                min: 1,
-                                style: {
-                                  textAlign: "center",
-                                  fontWeight: 700,
-                                  fontSize: "1.1rem",
-                                  color: theme.palette.text.primary,
-                                  background: "transparent",
-                                },
-                              }}
+                              inputProps={{ min: 1 }}
                               sx={{
-                                width: 48,
-                                mx: 0.5,
-                                "& fieldset": { border: "none" },
-                                "& input": {
-                                  textAlign: "center",
-                                  fontWeight: 700,
-                                  fontSize: "1.1rem",
-                                  color: theme.palette.text.primary,
-                                  bgcolor: "transparent",
-                                  p: 0,
-                                },
-                                background: "transparent",
+                                width: 60,
+                                '& .MuiInputBase-input': {
+                                  textAlign: 'center',
+                                  py: 0.5
+                                }
                               }}
-                              aria-label="Cantidad"
-                              size="small"
                             />
+                            
                             <IconButton
-                              onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                              onClick={() => handleQuantityChange(item.cartItemId, item.quantity + 1)}
                               size="small"
-                              aria-label="Aumentar cantidad"
-                              sx={{
-                                color: theme.palette.primary.main,
-                                bgcolor: "transparent",
-                                "&:hover": { bgcolor: theme.palette.action.hover },
-                              }}
                             >
-                              <Add />
+                              <Add fontSize="small" />
                             </IconButton>
-                          </Box>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontWeight: 800,
-                              color: theme.palette.text.primary,
-                              fontSize: "1.1rem",
-                              mt: 1,
-                            }}
-                          >
+                          </Stack>
+                          
+                          <Typography fontWeight={700}>
                             Q{(item.price * item.quantity).toFixed(2)}
                           </Typography>
-                          <IconButton
-                            onClick={() => removeFromCart(item._id)}
-                            sx={{
-                              color: theme.palette.error.main,
-                              mt: 1,
-                              bgcolor: theme.palette.error.main + "10", // muy ligero
-                              "&:hover": {
-                                bgcolor: theme.palette.error.main + "22",
-                                color: "#fff",
-                              },
-                              transition: "background 0.2s",
-                            }}
-                            aria-label="Eliminar producto"
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Box>
+                        </Stack>
                       </Paper>
                     </motion.div>
                   ))}
-                </Box>
+                </Stack>
               </Paper>
             </Grid>
-            {/* Resumen del Carrito */}
+
+            {/* Resumen del Pedido */}
             <Grid item xs={12} md={4}>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
                 <Paper
-                  elevation={8}
+                  elevation={2}
                   sx={{
-                    borderRadius: 4,
-                    p: { xs: 3, md: 4 },
-                    bgcolor: theme.palette.background.paper,
-                    position: "sticky",
-                    top: { md: 32, xs: 0 },
+                    p: 3,
+                    borderRadius: 3,
+                    bgcolor: 'background.paper',
+                    position: 'sticky',
+                    top: 20
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, color: theme.palette.primary.main }}>
-                    Resumen del Carrito
+                  <Typography variant="h6" fontWeight={600} mb={2}>
+                    Resumen del Pedido
                   </Typography>
-                  <Divider sx={{ mb: 2 }} />
-                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                    <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
-                      Subtotal:
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                      Q{total.toFixed(2)}
-                    </Typography>
-                  </Box>
+                  
                   <Divider sx={{ my: 2 }} />
-                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-                    <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
-                      Total:
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
+                  
+                  <Stack spacing={1.5} mb={3}>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography color="text.secondary">Subtotal:</Typography>
+                      <Typography>Q{total.toFixed(2)}</Typography>
+                    </Stack>
+                    
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography color="text.secondary">Envío:</Typography>
+                      <Typography>Gratis</Typography>
+                    </Stack>
+                    
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography color="text.secondary">Descuentos:</Typography>
+                      <Typography>Q0.00</Typography>
+                    </Stack>
+                  </Stack>
+                  
+                  <Divider sx={{ my: 2 }} />
+                  
+                  <Stack direction="row" justifyContent="space-between" mb={3}>
+                    <Typography fontWeight={600}>Total:</Typography>
+                    <Typography variant="h6" fontWeight={700}>
                       Q{total.toFixed(2)}
                     </Typography>
-                  </Box>
+                  </Stack>
+                  
                   <Button
                     variant="contained"
                     fullWidth
+                    size="large"
+                    onClick={() => navigate('/checkout')}
                     startIcon={<Payment />}
-                    sx={{
-                      mb: 2,
-                      px: 3,
-                      py: 1.2,
-                      borderRadius: 99,
-                      fontWeight: 700,
-                      fontSize: "1.08rem",
-                      background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                      color: theme.palette.getContrastText(theme.palette.primary.main),
-                      boxShadow: 4,
-                      "&:hover": {
-                        background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
-                        boxShadow: 8,
-                      },
-                    }}
-                    aria-label="Proceder al pago"
-                    onClick={() => navigate("/checkout")}
+                    sx={{ mb: 2 }}
                   >
                     Proceder al Pago
                   </Button>
+                  
                   <Button
                     variant="outlined"
                     fullWidth
-                    onClick={clearCart}
-                    startIcon={<DeleteForever />}
-                    sx={{
-                      color: theme.palette.error.main,
-                      borderColor: theme.palette.error.main,
-                      borderRadius: 99,
-                      fontWeight: 700,
-                      "&:hover": { borderColor: theme.palette.error.dark, background: theme.palette.action.hover },
-                    }}
-                    aria-label="Vaciar carrito"
+                    onClick={() => navigate('/menu')}
+                    startIcon={<Add />}
                   >
-                    Vaciar Carrito
+                    Seguir Comprando
                   </Button>
                 </Paper>
               </motion.div>

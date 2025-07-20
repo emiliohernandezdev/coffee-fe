@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Typography,
@@ -62,10 +62,11 @@ const datosSchema = Yup.object().shape({
 
 const CheckoutPage = () => {
   const theme = useTheme();
-  const user = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const cart = useCartStore(state => state.cart);
   const removeFromCart = useCartStore(state => state.removeFromCart);
   const updateQuantity = useCartStore(state => state.updateQuantity);
+  const clearCart = useCartStore(state => state.clearCart);
   const [activeStep, setActiveStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [pickupMethod, setPickupMethod] = useState("local");
@@ -79,45 +80,41 @@ const CheckoutPage = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     trigger,
-    getValues,
   } = useForm({
     resolver: yupResolver(datosSchema),
     mode: "onBlur",
-    defaultValues: {
-      name: user?.name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-    },
   });
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (formData) => {
     const orderData = {
+      orderId,
+      customer: {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+      },
       items: cart.map(item => ({
-        product: item._id,
-        options: item.options?.map(opt => ({
-          _id: opt._id,
-          value: opt.value
-        })),
-        extras: item.extras?.map(ext => ({
-          _id: ext._id,
-          name: ext.name,
-          price: ext.price
-        })),
-        quantity: item.quantity,
+        productId: item._id,
+        name: item.name,
         price: item.price,
+        quantity: item.quantity,
+        options: item.selectedOptions || [],
+        image: item.images?.[0] || null,
       })),
       total,
-      state: "pending",
-      type: pickupMethod === "local" ? "place" : "pickup",
-      table: null,
-      date: new Date(),
+      paymentMethod,
+      pickupMethod,
+      status: "pending",
+      createdAt: new Date().toISOString(),
     };
 
     try {
       await OrderService.createOrder(orderData);
+      clearCart(); // Limpiar el carrito después de crear la orden
       console.log("Orden creada exitosamente:", orderData);
     } catch (err) {
       console.error("Error al crear la orden:", err);
+      throw err; // Re-lanzar el error para manejarlo en handleNext
     }
   };
 
@@ -129,50 +126,43 @@ const CheckoutPage = () => {
           <form
             className="w-full flex flex-col md:flex-row gap-8"
             autoComplete="on"
-            onSubmit={handleSubmit(() => {
-              setActiveStep((prev) => prev + 1);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            })}
+            onSubmit={handleSubmit(() => handleNext())}
           >
             <Paper elevation={4} className="flex-1 p-6 rounded-2xl bg-white dark:bg-zinc-900">
               <Typography variant="h6" className="mb-4 font-bold text-primary">
                 Tus datos
               </Typography>
               <Box className="flex flex-col gap-4">
-                {!user && (
-                  <>
-                    <TextField
-                      fullWidth
-                      label="Nombre Completo"
-                      {...register("name")}
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Person />
-                          </InputAdornment>
-                        ),
-                      }}
-                      autoComplete="name"
-                    />
-                    <TextField
-                      fullWidth
-                      label="Correo Electrónico"
-                      {...register("email")}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Email />
-                          </InputAdornment>
-                        ),
-                      }}
-                      autoComplete="email"
-                    />
-                  </>
-                )}
+                <TextField
+                  fullWidth
+                  label="Nombre Completo"
+                  {...register("name")}
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person />
+                      </InputAdornment>
+                    ),
+                  }}
+                  autoComplete="name"
+                />
+                <TextField
+                  fullWidth
+                  label="Correo Electrónico"
+                  {...register("email")}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email />
+                      </InputAdornment>
+                    ),
+                  }}
+                  autoComplete="email"
+                />
                 <TextField
                   fullWidth
                   label="Teléfono"
@@ -238,48 +228,26 @@ const CheckoutPage = () => {
             <Divider className="mb-4" />
             <div className="flex flex-col gap-4">
               {cart.map((item) => (
-                <Box key={item._id} className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4 last:border-b-0">
+                <Box key={item.cartItemId} className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4 last:border-b-0">
                   <Box className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border border-primary/30">
                     <img
-                      src={item.images?.[0] ? `${item.images[0].startsWith("http") ? item.images[0] : apiConfig.imagesEndpoint.concat("products/") + item.images[0]}` : ""}
+                      src={item.images?.[0] ? `${apiConfig.imagesEndpoint}products/${item.images[0]}` : ""}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </Box>
                   <Box className="flex-1 min-w-0">
                     <Typography variant="subtitle1" className="font-bold text-lg truncate">{item.name}</Typography>
-                    {item.extras && item.extras.length > 0 && (
-                      <Box className="mt-1">
-                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                          Extras:
-                        </Typography>
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                          {item.extras.map((extra) => (
-                            <Chip
-                              key={extra._id}
-                              label={extra.name}
-                              size="small"
-                              sx={{
-                                bgcolor: "transparent",
-                                color: theme.palette.text.primary,
-                                fontWeight: 600,
-                                border: `1px solid ${theme.palette.divider}`,
-                              }}
-                            />
-                          ))}
-                        </Box>
-                      </Box>
-                    )}
-                    {item.options && item.options.length > 0 && (
+                    {item.selectedOptions?.length > 0 && (
                       <Box className="mt-1">
                         <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
                           Opciones:
                         </Typography>
                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                          {item.options.map((option) => (
+                          {item.selectedOptions.map((option, idx) => (
                             <Chip
-                              key={option._id}
-                              label={option.name}
+                              key={idx}
+                              label={`${option.name}: ${option.values}`}
                               size="small"
                               sx={{
                                 bgcolor: "transparent",
@@ -296,7 +264,7 @@ const CheckoutPage = () => {
                   <Box className="flex flex-col items-center gap-2 min-w-[90px]">
                     <Box className="flex items-center gap-1">
                       <IconButton
-                        onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                         size="small"
                         disabled={item.quantity <= 1}
                         sx={{
@@ -312,7 +280,7 @@ const CheckoutPage = () => {
                         onChange={(e) => {
                           const newQuantity = parseInt(e.target.value);
                           if (!isNaN(newQuantity) && newQuantity >= 1) {
-                            updateQuantity(item._id, newQuantity);
+                            updateQuantity(item.cartItemId, newQuantity);
                           }
                         }}
                         type="number"
@@ -344,7 +312,7 @@ const CheckoutPage = () => {
                         size="small"
                       />
                       <IconButton
-                        onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                         size="small"
                         sx={{
                           color: theme.palette.primary.main,
@@ -359,7 +327,7 @@ const CheckoutPage = () => {
                       Q{(item.price * item.quantity).toFixed(2)}
                     </Typography>
                     <IconButton
-                      onClick={() => removeFromCart(item._id)}
+                      onClick={() => removeFromCart(item.cartItemId)}
                       sx={{
                         color: theme.palette.error.main,
                         bgcolor: theme.palette.error.main + "10",
@@ -391,12 +359,21 @@ const CheckoutPage = () => {
             </Typography>
             <Typography variant="body1" className="mb-4 text-center">
               Tu pedido ha sido confirmado.<br />
-              Escanea el siguiente código QR para verificar tu pedido:
+              ID de tu pedido: {orderId}
             </Typography>
-            {/* Aquí podrías poner un componente de QR */}
             <Typography variant="body2" sx={{ mt: 2, color: theme.palette.text.secondary }}>
-              ID de la orden: {orderId}
+              Te hemos enviado un correo con los detalles de tu pedido.
             </Typography>
+            <Button
+              variant="contained"
+              sx={{ mt: 4 }}
+              onClick={() => {
+                clearCart();
+                navigate('/');
+              }}
+            >
+              Volver al inicio
+            </Button>
           </Paper>
         );
       default:
@@ -419,17 +396,20 @@ const CheckoutPage = () => {
     if (activeStep === 0) {
       const valid = await trigger();
       if (!valid) return;
-      setActiveStep((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (activeStep === 2) {
-      setActiveStep((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      await handlePlaceOrder();
     }
-    else {
-      setActiveStep((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    if (activeStep === steps.length - 2) {
+      try {
+        const formData = getValues();
+        await handlePlaceOrder(formData);
+      } catch (error) {
+        console.error("Error al procesar la orden:", error);
+        return;
+      }
     }
+    
+    setActiveStep((prev) => prev + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleBack = () => {
@@ -472,35 +452,39 @@ const CheckoutPage = () => {
           </CardContent>
         </Card>
         <div className="flex flex-col md:flex-row justify-between gap-4 mt-4">
-          <Button
-            variant="outlined"
-            startIcon={<ArrowBack />}
-            onClick={handleBack}
-            disabled={activeStep === 0}
-            sx={{ minWidth: 140, fontWeight: 700, borderRadius: 99 }}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="contained"
-            endIcon={<ArrowForward />}
-            onClick={handleNext}
-            sx={{
-              minWidth: 140,
-              fontWeight: 700,
-              borderRadius: 99,
-              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-              color: theme.palette.getContrastText(theme.palette.primary.main),
-              boxShadow: 4,
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
-                boxShadow: 8,
-              },
-            }}
-            disabled={activeStep === 0 && isSubmitting}
-          >
-            {activeStep === steps.length - 1 ? "Finalizar" : "Siguiente"}
-          </Button>
+          {activeStep !== steps.length - 1 && (
+            <>
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBack />}
+                onClick={handleBack}
+                disabled={activeStep === 0}
+                sx={{ minWidth: 140, fontWeight: 700, borderRadius: 99 }}
+              >
+                Anterior
+              </Button>
+              <Button
+                variant="contained"
+                endIcon={<ArrowForward />}
+                onClick={handleNext}
+                sx={{
+                  minWidth: 140,
+                  fontWeight: 700,
+                  borderRadius: 99,
+                  background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  color: theme.palette.getContrastText(theme.palette.primary.main),
+                  boxShadow: 4,
+                  "&:hover": {
+                    background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+                    boxShadow: 8,
+                  },
+                }}
+                disabled={isSubmitting}
+              >
+                {activeStep === steps.length - 2 ? "Confirmar Pedido" : "Siguiente"}
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -195,8 +195,7 @@ function Appbar({ darkMode, handleThemeChange }) {
             sx={{
               flexGrow: 1,
               cursor: "pointer",
-              // fontFamily: "'Lobster', cursive",
-              color: theme.palette.primary.light,
+              color: theme.palette.mode === 'dark' ? '#EFEBE9' : theme.palette.primary.contrastText,
               letterSpacing: 1,
             }}
             onClick={() => navigate("/")}
